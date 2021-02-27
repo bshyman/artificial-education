@@ -1,0 +1,101 @@
+version: 2.1
+
+executors:
+  default:
+    working_directory: ~/artificial_education
+    docker:
+      - image: circleci/ruby:2.7.0-node-browsers
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_PATH: vendor/bundle
+          BUNDLE_RETRY: 3
+          BUNDLER_VERSION: 2.0.1
+          RAILS_ENV: test
+          DISABLE_SPRING: 1
+          DB_HOST: 127.0.0.1
+          REDIS_URL: localhost
+          REDIS_DB: 0
+          REDIS_PORT: 6379
+          PG_HOST: 127.0.0.1
+          PGUSER: artificial_education
+      - image: circleci/postgres:12.0
+        environment:
+          POSTGRES_DB: artificial_education_test
+          POSTGRES_USER: artificial_education
+      - image: redis:5.0.7
+
+commands:
+  configure_bundler:
+    description: Configure bundler
+    steps:
+      - run:
+          name: Configure bundler
+          command: |
+            echo 'export BUNDLER_VERSION=$(cat Gemfile.lock | tail -1 | tr -d " ")' >> $BASH_ENV
+            source $BASH_ENV
+            gem install bundler
+
+jobs:
+  build:
+    executor: default
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - artificial_education-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+            - artificial_education-
+          paths:
+            - vendor/bundle
+      - configure_bundler
+      - run:
+          name: Install bundle
+          command: bundle install
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: Wait for Redis
+          command: dockerize -wait tcp://localhost:6379 -timeout 1m
+      - run:
+          name: Setup DB
+          command: bundle exec rails db:create db:migrate db:seed --trace
+      - save_cache:
+          key: artificial_education-{{ .Branch }}-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - ./artificial_education
+
+  fasterer:
+    executor: default
+    steps:
+      - attach_workspace:
+          at: ~/
+      - configure_bundler
+      - run:
+          name: Fasterer
+          command: bundle exec fasterer
+
+  rubocop:
+    executor: default
+    steps:
+      - attach_workspace:
+          at: ~/
+      - configure_bundler
+      - run:
+          name: Rubocop
+          command: bundle exec rubocop
+
+workflows:
+  version: 2
+  integration:
+    jobs:
+      - build
+      - fasterer:
+          requires:
+            - build
+      - rubocop:
+          requires:
+            - build

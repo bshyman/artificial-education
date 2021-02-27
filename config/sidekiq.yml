@@ -1,0 +1,13 @@
+development: &default
+  :namespace: <%= ENV['SIDEKIQ_NAMESPACE'] %>
+  :pidfile: tmp/pids/sidekiq.pid
+  :expires: 120
+  :concurrency: 25
+  :queues:
+    - default
+
+production:
+  <<: *default
+
+test:
+  <<: *default
