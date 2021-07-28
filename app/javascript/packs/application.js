@@ -8,6 +8,16 @@ import Turbolinks from "turbolinks"
 import * as ActiveStorage from "@rails/activestorage"
 import "channels"
 
+import 'alpine-turbo-drive-adapter'
+import Alpine from 'alpinejs'
+
+// import tailwind into javascript
+import "../stylesheets/application.scss"
+
 Rails.start()
 Turbolinks.start()
 ActiveStorage.start()
+
+window.Alpine = Alpine
+Alpine.start()
+
