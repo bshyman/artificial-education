@@ -1,0 +1,52 @@
+class Question < ApplicationRecord
+  QUESTION_TYPES = ['missing_letter', 'addition']
+
+  def generate(args = {})
+    case args[:type]
+    when 'missing_letter'
+      missing_letter_question_hash(random_pokemon)
+    when 'addition'
+      addition_question
+    else
+      raise "Can't generate question without type!"
+    end
+  end
+
+  def missing_letter_question_hash(pokemon)
+    chars   = pokemon.name.chars
+    correct = chars.sample.upcase
+    answers = ('a'..'z').without(chars).sample(3).push(correct).shuffle
+    {
+      name: pokemon.name,
+      sprite: PokeapiService.new.fetch_primary_sprite(pokemon.pokedex_id),
+      question: 'Which letter is missing?',
+      answers: answers,
+      correct: correct
+    }
+  end
+
+  def random_pokemon
+    pokemon = nil
+    while pokemon.nil?
+      random_pokedex_id = rand(900)
+      pokemon           = Pokemon.find_by_pokedex_id(random_pokedex_id)
+    end
+    pokemon
+  end
+
+  def addition_question
+    correct = 21
+    until correct < 20
+      var1    = rand(1..15)
+      var2    = rand(1..15)
+      correct = var1 + var2
+    end
+
+    answers = [correct]
+    until answers.size == 4
+      answers << rand(4..15)
+      answers.uniq!
+    end
+    { question: "#{var1} + #{var2}", answers: answers, answer: correct, }
+  end
+end
