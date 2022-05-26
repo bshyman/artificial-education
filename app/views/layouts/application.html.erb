@@ -1,19 +1,22 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>TrapStarter</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<html lang="en">
+<head>
+  <title>Artificial Education</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= stylesheet_pack_tag 'application', media: 'all' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-    <%= yield :head %>
-  </head>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= stylesheet_pack_tag 'application', media: 'all' %>
+  <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload', defer: true %>
+  <%= yield :head %>
+</head>
 
-  <body>
-  <%= render partial: 'layouts/navbar' %>
-    <%= yield %>
-  </body>
+<body>
+<%= render partial: 'layouts/navbar' %>
+
+<div class="min-h-screen">
+  <%= yield %>
+</div>
+</body>
 </html>

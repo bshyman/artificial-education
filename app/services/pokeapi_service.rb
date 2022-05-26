@@ -2,9 +2,6 @@ class PokeapiService
   BASE_URL  = 'http://pokeapi.co/api/v2/pokemon/'
 
 
-  def initialize
-  end
-
   def fetch_pokemon_by_id(id)
     full_url     = BASE_URL + id.to_s
     raw_response = HTTParty.get(full_url)
@@ -35,10 +32,11 @@ class PokeapiService
       next if response_pokemon.nil?
 
       pokemon = Pokemon.find_or_initialize_by(pokedex_id: counter)
+
       pokemon.assign_attributes(
         name: response_pokemon['name'],
         base_experience: response_pokemon['base_experience'],
-        image_url: response_pokemon.dig('sprites', 'front_default')
+        image: File.open(Rails.root.join("app/assets/images/pokemon/#{counter}.svg")).read
       )
 
       next unless pokemon.save

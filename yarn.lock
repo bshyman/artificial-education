@@ -1240,11 +1240,6 @@ alphanum-sort@^1.0.0:
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
   integrity sha1-l6ERlkmyEa0zaR2fn0hqjsn74KM=
 
-alpine-turbo-drive-adapter@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/alpine-turbo-drive-adapter/-/alpine-turbo-drive-adapter-1.1.0.tgz#615eb19c13599b7a028130cc28d1416b3de58c17"
-  integrity sha512-66D+DrSi6Y+aC73bsDSRNWY7232hlJtcNzT82upUughX4D7GqjAU7wTWKej/WP2dKaVIN4D+b0L72Pc+MYnmsQ==
-
 alpinejs@^3.2.2:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/alpinejs/-/alpinejs-3.2.2.tgz#3feaa479671212788d9c6716c85dc19f8255c999"
@@ -4009,6 +4004,11 @@ jsonfile@^6.0.1:
     universalify "^2.0.0"
   optionalDependencies:
     graceful-fs "^4.1.6"
+
+just-percentile@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/just-percentile/-/just-percentile-3.0.1.tgz#df5d9a58b783984dca49a096f48600c96fb7f45b"
+  integrity sha512-aYAVvI59TlBKrnwtdk8V2RqDbVVNxbQqwZe2f4uy68KVypeq04fZRoM3JLYr7fLhPXyplmdzM6fk8FNk/fgBAw==
 
 killable@^1.0.1:
   version "1.0.1"

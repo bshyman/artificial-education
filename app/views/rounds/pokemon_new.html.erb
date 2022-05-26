@@ -1,0 +1,56 @@
+<div x-data="pokemonGame" @keypress.window="submitAnswer($event)" class="flex items-center justify-center translate-y-10 transform ">
+  <div class="grid grid-cols-12 gap-4 bg-white opacity-90 mx-10 w-full">
+    <div class="col-span-8 p-6">
+      <div class="flex flex-col justify-center">
+        <div class="flex items-center justify-center">
+          <%= inline_svg_tag "pokemon/#{@question[:id]}.svg" %>
+        </div>
+
+        <hr class="border border-gray-200 my-8">
+        <div class="mx-auto w-3/4">
+          <div class="flex w-full items-center justify-evenly">
+
+            <% index_to_hide = @question[:name].chars.map.with_index { |letter, idx| idx if letter == @question[:correct].downcase }.compact.sample %>
+            <% @question[:name].upcase.chars.each.with_index do |letter, idx| %>
+              <div class="border-b-2 border-gray-400 m-4 w-full flex justify-center p-4 text-2xl"><%== idx == index_to_hide ? '&nbsp;' : letter %></div>
+            <% end %>
+          </div>
+
+          <div class="mt-8 flex w-full items-center justify-evenly">
+            <% alphabet.sample(3).push(@question[:correct]).shuffle.each do |letter| %>
+              <div @keypress="" class="border-b-2 border-gray-400 m-4 w-full flex justify-center p-4 text-2xl"><%= letter %></div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-span-4 border-l-2 border-green-600  shadow p-6">
+      <div class="h-32 w-32 mx-auto bg-white rounded-full shadow border-8 border-indigo-700 flex items-center justify-center">
+        <div class="flex flex-col items-center">
+          <p class="text-indigo-700 text-base font-bold"><span x-text="percentCorrect()"></span>% </p>
+          <p class="text-gray-600 text-sm"><span x-text="correctlyAnswered"></span> / <span>10</span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('pokemonGame', () => ({
+      currentQuestion: 1,
+      correctlyAnswered: 0,
+      submitAnswer(event) {
+        if (event.key === '<%= @question[:correct].downcase %>') {
+          this.correctlyAnswered ++
+        } else if ('<%= @question[:answers] %>'.includes(event.key)) {
+          this.currentQuestion ++
+        }
+      },
+      percentCorrect(){
+        return Math.round((this.correctlyAnswered / 10) * 100)
+      }
+    }))
+  })
+</script>

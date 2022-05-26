@@ -1,0 +1,64 @@
+<div class="w-full">
+  <div class='flex items-center justify-center'>
+    <div class="w-3/4 mt-6 opacity-90">
+      <%= link_to 'New Game', game_new_pokemon_round_path(Game.pokemon_spellcheck), class: ' focus:ring-2 text-2xl focus:ring-offset-2 whitespace-nowrap bg-green-500 mb-4 inline-block text-white focus:ring-gray-500 bg-white transition duration-150 ease-in-out focus:outline-none rounded border rounded-lg border-gray-300 px-8 py-3  leading-6 hover:bg-green-300' %>
+      <div class="flex">
+        <h2 class="w-full flex items-center justify-center p-6 text-center font-semibold bg-white tracking-widest">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-award" width="56" height="56" viewBox="0 0 24 24" stroke-width="2.5" stroke="#FFD700" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <circle cx="12" cy="9" r="6"/>
+            <polyline points="9 14.2 9 21 12 19 15 21 15 14.2" transform="rotate(-30 12 9)"/>
+            <polyline points="9 14.2 9 21 12 19 15 21 15 14.2" transform="rotate(30 12 9)"/>
+          </svg>
+          <span class="mx-4 text-4xl">HIGH SCORES</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-award" width="56" height="56" viewBox="0 0 24 24" stroke-width="2.5" stroke="#FFD700" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+            <circle cx="12" cy="9" r="6"/>
+            <polyline points="9 14.2 9 21 12 19 15 21 15 14.2" transform="rotate(-30 12 9)"/>
+            <polyline points="9 14.2 9 21 12 19 15 21 15 14.2" transform="rotate(30 12 9)"/>
+          </svg>
+
+        </h2>
+      </div>
+      <hr>
+      <table class="w-full shadow text-left bg-white dark:bg-gray-800">
+        <thead>
+        <tr class="border-b border-gray-300 dark:border-gray-200">
+          <th class="py-5 pl-2 sm:pl-10 w-1/4 text-base dark:text-gray-100 text-gray-800">Name</th>
+          <th class="py-5 w-1/4 text-base dark:text-gray-100 text-gray-800 text-center pr-8">Game</th>
+          <th class="py-5 w-1/4 text-base dark:text-gray-100 text-gray-800 text-center">Date</th>
+          <th class="py-5 w-1/4 text-base dark:text-gray-100 text-gray-800 text-center pr-2 sm:pr-10">Score</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="border-b border-gray-200">
+          <td class="pl-2 sm:pl-10 pr-2 py-4">
+            <div class="flex items-center">
+              <div class="w-12 h-12">
+                <img src="https://cdn.tuk.dev/assets/blond-man-happy-expression_1194-2873.jpg" alt="man" tabindex="0" class="focus:outline-none w-full h-full object-cover rounded shadow"/>
+              </div>
+              <div class="pl-4">
+                <div>
+                  <a href="javascript:void(0)" class="focus:text-indigo-600 focus:underline hover:text-indigo-600 dark:text-gray-100 text-gray-800 focus:outline-none">
+                    <p class="text-xs sm:text-sm">Andres Berlin</p></a>
+                </div>
+                <span tabindex="0" class="focus:outline-none text-xs text-gray-600 dark:text-gray-400">andresberlin@gmail.com</span>
+              </div>
+            </div>
+          </td>
+          <td class="pr-2 pt-4 pb-5 text- gray-800 text-xs sm:text-sm">
+            <div class="xl:pl-32 flex flex-col">
+              <div>
+                <p tabindex="0" class="focus:outline-none dark:text-gray-100 text-gray-800 text-xs sm:text-sm pb-1">Director</p>
+                <span tabindex="0" class="focus:outline-none text-xs text-gray-600 dark:text-gray-400">Talent Management </span>
+              </div>
+            </div>
+          </td>
+          <td tabindex="0" class="focus:outline-none pr-2 pt-4 pb-5 text-green-700 text-xs sm:text-sm text-center">Active</td>
+          <td tabindex="0" class="focus:outline-none pt-4 pb-5 dark:text-gray-100 text-gray-800 pr-2 sm:pr-10 text-xs sm:text-sm text-center">Owner</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

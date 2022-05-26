@@ -1,10 +1,10 @@
 class Question < ApplicationRecord
-  QUESTION_TYPES = ['missing_letter', 'addition']
+  QUESTION_TYPES = %w[missing_letter addition]
 
   def generate(args = {})
     case args[:type]
     when 'missing_letter'
-      missing_letter_question_hash(random_pokemon)
+      missing_letter_question_hash(random_pokemon, user_id: args[:current_user_id])
     when 'addition'
       addition_question
     else
@@ -12,18 +12,25 @@ class Question < ApplicationRecord
     end
   end
 
-  def missing_letter_question_hash(pokemon)
+  def missing_letter_question_hash(pokemon, current_user_id)
     chars   = pokemon.name.chars
     correct = chars.sample.upcase
     answers = ('a'..'z').without(chars).sample(3).push(correct).shuffle
+    round = Game.pokemon_spellcheck.rounds.where(user_id: current_user_id).last
+    
     {
       name: pokemon.name,
-      sprite: PokeapiService.new.fetch_primary_sprite(pokemon.pokedex_id),
+      id: pokemon.id,
       question: 'Which letter is missing?',
       answers: answers,
       correct: correct
     }
   end
+  
+  def answered?
+    submitted_answer.present?
+  end
+
 
   def random_pokemon
     pokemon = nil

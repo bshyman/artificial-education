@@ -1,0 +1,4 @@
+class MissingLetterQuestion < Question
+
+
+end
