@@ -23,6 +23,9 @@ import "../stylesheets/application.scss"
 // Turbolinks.start()
 // ActiveStorage.start()
 
+import Swal from 'sweetalert2'
+window.Swal = Swal
+
 window.Alpine = Alpine
 window.Alpine.start()
 
