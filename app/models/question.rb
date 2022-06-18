@@ -7,6 +7,8 @@ class Question < ApplicationRecord
       missing_letter_question_hash(random_pokemon, user_id: args[:current_user_id])
     when 'addition'
       addition_question
+    when 'multiplication'
+      @multiplication_questions = SimpleMathProblemsService.new.new_multiplication_questions
     else
       raise "Can't generate question without type!"
     end

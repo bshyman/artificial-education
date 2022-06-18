@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   resources :pokemon, except: :destroy
   resources :games, only: [:index] do
     get 'new_pokemon_round', to: 'rounds#pokemon_new'
+    get 'new_simple_math_round', to: 'rounds#simple_math_new'
     resources :rounds, only: [] do
       get 'new_question', to: 'questions#new', on: :collection, as: 'new_question'
     end
