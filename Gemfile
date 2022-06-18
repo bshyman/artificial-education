@@ -49,6 +49,8 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'spring'
+  gem 'rubocop'
+  gem 'rubocop-rails'
 end
 
 group :test do
