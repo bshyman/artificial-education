@@ -1,0 +1,21 @@
+<div data-question="<%= question.to_json %>" class="text-center">
+  <div class="flex justify-between">
+    <h1>Question <span x-text="currentQuestionNumber"></span> of 10</h1>
+    <h1>Score: <span x-text="score"></span></h1>
+  </div>
+  <br>
+  <span style="font-size: 5rem;">
+    <%= question.content.sub('*', 'x') %>
+  </span>
+  <label>
+    <input id=`question-${currentQuestionNumber}` @input="validateChar($event)" @keydown.enter="submitAnswer($event, '<%= question.to_json %>')" x-text="answer" x-model="answer" class="bg-transparent mx-6 p-1 border-b inline-block focus:outline-none whitespace-nowrap overflow-hidden " style="width: 200px;" autofocus></input>
+  </label>
+  <br><br>
+  <h4>Choose the correct answer</h4>
+
+  <div id='answers-wrapper' class="my-4 w-2/3 mx-auto flex justify-evenly">
+    <% [question.correct_answer, *question.incorrect_answers].shuffle.each do |answer| %>
+      <button data-answer="<%= answer %>" @click="submitAnswer($event, '<%= question.to_json %>')" value="<%= answer.to_i %>" class="border border-white rounded-sm px-6 py-4 hover:opacity-50 animate__animated hover:-translate-y-1 transform transition"><%= answer %></button>
+    <% end %>
+  </div>
+</div>

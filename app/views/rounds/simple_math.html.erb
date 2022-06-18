@@ -1,28 +1,9 @@
 <%#= render partial: 'flashcard' %>
 <div x-data="simpleMath()" class="overflow-hidden" style="height: 900px;padding-top: 150px;">
   <div class="h-full" id='chalkboard'>
-    <% @questions.each_with_index do |question, index| %>
-      <div x-show="isCurrentQuestion($el)" data-question="<%= question.to_json %>" data-index="<%= index %>" class="text-center">
-        <div class="flex justify-between">
-          <h1>Question <%= index + 1 %> of <%= @questions.count %></h1>
-          <h1>Score: <span x-text="score"></span></h1>
-        </div>
-        <br>
-        <span style="font-size: 5rem;">
-          <%= question['question'].sub('*', 'x') %>
-        </span>
-        <input id='question-<%= index %>' @input="validateChar($event)" @keydown.enter="submitAnswer($event, '<%= question.to_json %>')" x-text="answer" x-model="answer" class="bg-transparent mx-6 p-1 border-b inline-block focus:outline-none whitespace-nowrap overflow-hidden " style="width: 200px;" autofocus></input>
-        <br><br>
-        <h4>Choose the correct answer</h4>
+    <div x-init="fetchNextSimpleMathQuestion()" id="simple-math-question-wrapper">
+    </div>
 
-        <div class="my-4 w-2/3 mx-auto flex justify-evenly">
-          <% question.values_at('correctAnswer', 'incorrectAnswers').flatten.shuffle.each do |answer| %>
-            <button @click="submitAnswer($event, '<%= question.to_json %>')" value="<%= answer.to_i %>" class="border border-white rounded-sm px-6 py-4 hover:opacity-50 animate__animated hover:-translate-y-1 transform transition"><%= answer %></button>
-          <% end %>
-
-        </div>
-      </div>
-    <% end %>
     <br/>
   </div>
   <div id="final" class="w-full h-full flex justify-center items-center" style="font-size: 5rem;">
@@ -39,7 +20,7 @@
 <script type="text/javascript" charset="utf-8">
   document.addEventListener('alpine:init', () => {
     Alpine.data('simpleMath', () => ({
-      currentQuestionNumber: 0,
+      currentQuestionNumber: 1,
       answer: null,
       score: 0,
       validateChar(event) {
@@ -52,26 +33,37 @@
           event.target.innerText = validVal
         }
       },
+      async fetchNextSimpleMathQuestion() {
+        const response = await fetch('<%= new_simple_math_questions_path %>')
+        if (response.ok) {
+          document.getElementById("simple-math-question-wrapper").innerHTML = await response.text()
+        }
+      },
       isCurrentQuestion(element) {
         const questionNumber = parseInt(element.dataset.index)
         return this.currentQuestionNumber === questionNumber
       },
       submitAnswer(event, questionJson) {
         const question = JSON.parse(questionJson)
-        if (question.correctAnswer.toString() === event.currentTarget.value) {
+        if (question.correct_answer.toString() === event.currentTarget.value) {
           party.sparkles(event.currentTarget);
           this.score++
         } else {
           event.currentTarget.classList.add('animate__headShake')
+
+          const answersWrapper = document.getElementById('answers-wrapper')
+          answersWrapper.querySelector(`[data-answer="${question.correct_answer}"]`).style.borderColor = 'yellow'
+          answersWrapper.querySelector(`[data-answer="${question.correct_answer}"]`).style.borderWidth = '2px'
         }
         setTimeout(() => {
           this.answer = ''
           if (this.currentQuestionNumber < 9) {
             this.currentQuestionNumber++
+            this.fetchNextSimpleMathQuestion()
           } else {
             this.showFinal()
           }
-        }, 500)
+        }, 2000)
       },
       showFinal() {
         Swal.fire({

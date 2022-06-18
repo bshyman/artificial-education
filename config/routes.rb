@@ -8,6 +8,11 @@ Rails.application.routes.draw do
       get 'new_question', to: 'questions#new', on: :collection, as: 'new_question'
     end
   end
+
+  resources :questions, only: [] do
+    get 'new_simple_math', on: :collection
+  end
+
   root to: 'games#index'
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
