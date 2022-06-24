@@ -1,0 +1,22 @@
+<div class="flex flex-col justify-center">
+  <div class="flex items-center justify-center h-60">
+    <%= inline_svg_tag "pokemon/#{question[:id]}.svg", class: 'max-h-60' %>
+  </div>
+
+  <hr class="border border-gray-200 my-8">
+  <div class="mx-auto w-full">
+    <div class="flex w-full items-center justify-evenly">
+
+      <% index_to_hide = question[:name].chars.map.with_index { |letter, idx| idx if letter == question[:correct].downcase }.compact.sample %>
+      <% question[:name].upcase.chars.each.with_index do |letter, idx| %>
+        <div class="border-b-2 border-gray-400 my-4 flex justify-around p-4 text-2xl"><div><%== idx == index_to_hide ? '&nbsp;' : letter %></div></div>
+      <% end %>
+    </div>
+
+    <div class="mt-8 flex w-full items-center justify-evenly">
+      <% alphabet.sample(3).push(question[:correct]).shuffle.each do |letter| %>
+        <div @click="submitAnswer($event)" class="border-2 border-gray-400 m-4 w-full flex justify-center p-4 cursor-pointer text-2xl hover:opacity-50 transform hover:-translate-y-1 transition uppercase"><%= letter %></div>
+      <% end %>
+    </div>
+  </div>
+</div>

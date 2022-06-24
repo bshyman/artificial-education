@@ -1,0 +1,121 @@
+<div class="progress-wrap">
+
+<div class="progress-bg">
+  <div id='pokemon-score-bar' class="progress-bar transition-width transform duration-1000" :style="{width: score + '%'}">
+    <h3 class="raised mx-0 text-black" x-text='correctlyAnswered + "0%"'></h3>
+  </div>
+</div>
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+
+</script>
+<style>
+.progress-wrap {
+    background: white;
+    border-radius: 20px;
+}
+
+    .progress-bg {
+        margin: 0 auto;
+        /*width: 65%;*/
+        height: 78px;
+        border-radius: 10px;
+        text-align: center;
+        -moz-box-shadow: inset 0 0 10px #ccc;
+        -webkit-box-shadow: inset 0 0 10px #ccc;
+        box-shadow: inset 0 0 10px #ccc;
+    }
+
+    .progress-bar {
+        height: 78px;
+        border-radius: 10px;
+        float: left;
+        /*width: 50%;*/
+        /* fallback */
+        background-color: greenyellow;
+
+        /* Safari 4-5, Chrome 1-9 */
+        background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#1c314a), to(#27425f));
+
+        /* Safari 5.1, Chrome 10+ */
+        background: -webkit-linear-gradient(top, greenyellow, yellowgreen);
+
+        /* Firefox 3.6+ */
+        background: -moz-linear-gradient(top, greenyellow, yellowgreen);
+
+        /* IE 10 */
+        background: -ms-linear-gradient(top, greenyellow, yellowgreen);
+
+        /* Opera 11.10+ */
+        background: -o-linear-gradient(top, greenyellow, yellowgreen);
+    }
+
+    .progress-bg h3.raised {
+        font-family: Arial, sans-serif;
+        font-size: 2em;
+        font-weight: 600;
+        line-height: 78px;
+        text-align: center;
+        display: inline;
+        width: 100%;
+        color: #fff;
+        margin: 15px;
+        padding: 0 25px 0 0;
+        -webkit-animation: fadein 4s; /* Safari and Chrome */
+        -moz-animation: fadein 4s; /* Firefox */
+        -ms-animation: fadein 4s; /* Internet Explorer */
+        -o-animation: fadein 4s; /* Opera */
+        animation: fadein 4s;
+    }
+
+    @keyframes fadein {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Firefox */
+    @-moz-keyframes fadein {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Safari and Chrome */
+    @-webkit-keyframes fadein {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Internet Explorer */
+    @-ms-keyframes fadein {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    /* Opera */
+    @-o-keyframes fadein {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+</style>

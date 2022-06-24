@@ -16,9 +16,9 @@ class Question < ApplicationRecord
 
   def missing_letter_question_hash(pokemon, current_user_id)
     chars   = pokemon.name.chars
-    correct = chars.sample.upcase
-    answers = ('a'..'z').without(chars).sample(3).push(correct).shuffle
-    round = Game.pokemon_spellcheck.rounds.where(user_id: current_user_id).last
+    correct = chars.sample
+    answers = ('a'..'z').without(correct).sample(3).push(correct).shuffle
+    # round = Game.pokemon_spellcheck.rounds.where(user_id: current_user_id).last
     
     {
       name: pokemon.name,

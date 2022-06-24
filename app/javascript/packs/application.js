@@ -24,7 +24,7 @@ import "../stylesheets/application.scss"
 // ActiveStorage.start()
 
 import Swal from 'sweetalert2'
-window.Swal = Swal
+window.swal = Swal
 
 window.Alpine = Alpine
 window.Alpine.start()

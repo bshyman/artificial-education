@@ -4,7 +4,8 @@ class SimpleMathProblemsService
     url = simple_math_url(operator: 'multiplication')
     questions = send_request(url)
     save_questions(questions)
-    questions
+    # questions
+    # SimpleMathQuestion.all.sample(10).map{|q| { question: q.content, correct_answer: q.correct_answer, incorrect_answers: q.incorrect_answers }.stringify_keys}
   end
 
   def send_request(url)
@@ -22,8 +23,7 @@ class SimpleMathProblemsService
 
   def save_questions(questions)
     questions.each do |question|
-      Question.find_or_create_by!(game_id: Game.simple_math.id, content: question['question'],
-                                  correct_answer: question['correctAnswer'], incorrect_answers: question['incorrectAnswers'])
+      Question.find_or_create_by!(game_id: Game.simple_math.id, content: question['question'], correct_answer: question['correctAnswer'], incorrect_answers: question['incorrectAnswers'])
     end
   end
 end

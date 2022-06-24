@@ -45,12 +45,13 @@
       },
       submitAnswer(event, questionJson) {
         const question = JSON.parse(questionJson)
+        let timeout = 500
         if (question.correct_answer.toString() === event.currentTarget.value) {
           party.sparkles(event.currentTarget);
           this.score++
         } else {
           event.currentTarget.classList.add('animate__headShake')
-
+          timeout = 3000
           const answersWrapper = document.getElementById('answers-wrapper')
           answersWrapper.querySelector(`[data-answer="${question.correct_answer}"]`).style.borderColor = 'yellow'
           answersWrapper.querySelector(`[data-answer="${question.correct_answer}"]`).style.borderWidth = '2px'
@@ -63,7 +64,7 @@
           } else {
             this.showFinal()
           }
-        }, 2000)
+        }, timeout)
       },
       showFinal() {
         Swal.fire({

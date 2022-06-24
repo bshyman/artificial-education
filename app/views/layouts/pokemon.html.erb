@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Artifical Education</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title>Artifical Education</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= stylesheet_pack_tag 'application', media: 'all' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload', defer:true %>
-    <%= yield :head %>
-  </head>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= stylesheet_pack_tag 'application', media: 'all' %>
+  <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload', defer: true %>
+  <%= yield :head %>
+</head>
 
-  <body>
-  <%= render partial: 'layouts/navbar' %>
-  <div class="min-h-screen" style="background-image: url('<%= asset_path 'pokemon_poster.jpg' %>'); background-size: cover; background-color: cornflowerblue;">
-    <%= yield %>
-  </div>
-  </body>
+<body>
+<%= render partial: 'layouts/navbar' %>
+<div class="h-screen overflow-hidden" style="background-image: url('<%= asset_path 'pokemon-field.png' %>'); background-size: cover; background-color: cornflowerblue;">
+  <%= yield %>
+</div>
+</body>
 </html>
+
+<style>
+    body {
+        font-family: pokemon, sans-serif;
+    }
+</style>

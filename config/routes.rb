@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
+  resources :players
   resources :users
-  resources :pokemon, except: :destroy
+  resources :pokemon, except: :destroy do
+    get 'new_question' => 'pokemon#new_question', on: :collection
+  end
   resources :games, only: [:index] do
     get 'new_pokemon_round', to: 'rounds#pokemon_new'
     get 'new_simple_math_round', to: 'rounds#simple_math_new'
@@ -15,5 +18,7 @@ Rails.application.routes.draw do
 
   root to: 'games#index'
 
+  get 'sign_in' => 'users#sign_in'
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  #
 end
