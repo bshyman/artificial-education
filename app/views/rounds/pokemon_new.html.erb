@@ -2,12 +2,25 @@
 
   <div x-data="pokemonGame" @keypress.window="submitAnswer($event)" class="flex items-center justify-center translate-y-10 transform">
     <div class="grid grid-cols-12 gap-4 mx-10 w-full">
-      <div x-init="fetchNextPokemonQuestion()" id='pokemon-spellcheck-question-wrapper' class="col-span-8 p-6 bg-white border border-gray-300 rounded-lg" style="height: fit-content;">
+      <div class="col-span-12 flex" style="max-height: 10vh;">
+          <i :class="determineOpacity(1)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
+          <i :class="determineOpacity(2)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
+          <i :class="determineOpacity(3)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
+          <i :class="determineOpacity(4)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
+          <i :class="determineOpacity(5)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
+          <i :class="determineOpacity(6)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
+          <i :class="determineOpacity(7)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
+          <i :class="determineOpacity(8)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
+          <i :class="determineOpacity(9)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
+          <i :class="determineOpacity(10)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
       </div>
-      <div class="col-span-4 border-l-2 border-green-600  shadow p-6">
-        <%= render partial: 'points_progress_bar' %>
 
-        <div class="text-4xl mt-20 mx-auto text-center text-white" style="font-size: 10rem;"> <span x-text="correctlyAnswered"></span> / <span x-text="currentQuestion - 1"></span></div>
+      <div x-init="fetchNextPokemonQuestion()" id='pokemon-spellcheck-question-wrapper' class="col-span-9 p-6 bg-white border border-gray-300 rounded-lg" style="height: fit-content;">
+      </div>
+      <div class="col-span-3 border-l-2 border-green-600  shadow p-6">
+        <%#= render partial: 'points_progress_bar' %>
+
+                <div class="text-4xl mt-20 mx-auto text-center text-white" style="font-size: 10rem;"> <span x-text="correctlyAnswered"></span> / <span x-text="currentQuestion - 1"></span></div>
 
         <!--      <div class="h-32 w-32 mx-auto bg-white rounded-full shadow border-8 border-indigo-700 flex items-center justify-center">-->
         <!--        <div class="flex flex-col items-center">-->
@@ -29,6 +42,18 @@
     body.swal2-shown > [aria-hidden="true"] {
         transition: 0.1s filter;
         filter: blur(10px);
+    }
+
+    .default {
+        opacity: 0.5;
+    }
+
+    .correct {
+        opacity: 1;
+    }
+
+    .incorrect {
+        opacity: 0.2;
     }
 
 </style>
@@ -88,7 +113,7 @@
       },
       gameOver() {
 
-        Swal.fire({
+        swal.fire({
           title: `Game Over! <br> ${this.correctlyAnswered} out of 10`,
           text: "Play again? ",
           showCancelButton: true,
@@ -106,6 +131,17 @@
             window.location = '<%= games_path %>'
           }
         })
+      },
+      determineOpacity(questionNumber){
+        if (this.currentQuestion === questionNumber){
+          return 'animate-pulse'
+        } else if (this.currentQuestion < questionNumber){
+          return 'default'
+        } else if (this.answerResults[questionNumber -1]){
+          return 'correct'
+        } else {
+          return 'incorrect'
+        }
       }
     }))
   })
