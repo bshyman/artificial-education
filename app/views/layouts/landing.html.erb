@@ -1,0 +1,11 @@
+<%= content_for :skip_navbar %>
+<div x-data="landingPage" class="bg-black inset-0 absolute">
+  <%= button_to 'Login', '/auth/auth0', method: :post, id: 'login-button', class: 'invisible' %>
+</div>
+<script type="text/javascript" charset="utf-8">
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('landingPage', () => {
+      document.getElementById('login-button').click()
+    })
+  })
+</script>

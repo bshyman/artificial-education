@@ -1,7 +1,7 @@
 <%#= render partial: 'flashcard' %>
-<div x-data="simpleMath()" class="overflow-hidden" style="height: 900px;padding-top: 150px;">
+<div x-data="simpleMath()"  class="overflow-hidden" style="height: 900px;padding-top: 150px;">
   <div class="h-full" id='chalkboard'>
-    <div x-init="fetchNextSimpleMathQuestion()" id="simple-math-question-wrapper">
+    <div id="simple-math-question-wrapper">
     </div>
 
     <br/>
@@ -32,6 +32,9 @@
           this.answer = validVal
           event.target.innerText = validVal
         }
+      },
+      init(){
+        this.fetchNextSimpleMathQuestion()
       },
       async fetchNextSimpleMathQuestion() {
         const response = await fetch('<%= new_simple_math_questions_path %>')
@@ -67,7 +70,7 @@
         }, timeout)
       },
       showFinal() {
-        Swal.fire({
+        swal.fire({
           title: `Game Over! <br> ${this.score} out of 10`,
           text: "Play again? ",
           showCancelButton: true,
