@@ -1,7 +1,10 @@
 <div class="w-full">
   <div class='flex items-center justify-center'>
     <div class="w-3/4 mt-6 opacity-90">
-      <%= link_to 'New Game', game_new_pokemon_round_path(Game.pokemon_spellcheck), class: ' focus:ring-2 text-2xl focus:ring-offset-2 whitespace-nowrap bg-green-500 mb-4 inline-block text-white focus:ring-gray-500 bg-white transition duration-150 ease-in-out focus:outline-none rounded border rounded-lg border-gray-300 px-8 py-3  leading-6 hover:bg-green-300' %>
+      <div class="flex items-center justify-between">
+        <%= link_to 'New Game', game_new_pokemon_round_path(Game.pokemon_spellcheck), class: ' focus:ring-2 text-2xl focus:ring-offset-2 whitespace-nowrap bg-green-500 mb-4 inline-block text-white focus:ring-gray-500 bg-white transition duration-150 ease-in-out focus:outline-none rounded border rounded-lg border-gray-300 px-8 py-3  leading-6 hover:bg-green-300' %>
+        <%= link_to 'Pokedex', pokedex_pokemon_index_path, class: ' focus:ring-2 text-2xl focus:ring-offset-2 whitespace-nowrap bg-yellow-500 mb-4 inline-block text-white focus:ring-gray-500 bg-white transition duration-150 ease-in-out focus:outline-none rounded border rounded-lg border-yellow-300 px-8 py-3  leading-6 hover:bg-yellow-300' %>
+      </div>
       <div class="flex">
         <h2 class="w-full flex items-center justify-center p-6 text-center font-semibold bg-white tracking-widest">
           <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-award" width="56" height="56" viewBox="0 0 24 24" stroke-width="2.5" stroke="#FFD700" fill="none" stroke-linecap="round" stroke-linejoin="round">
