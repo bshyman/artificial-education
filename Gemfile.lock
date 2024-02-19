@@ -119,6 +119,8 @@ GEM
     msgpack (1.4.2)
     multi_xml (0.6.0)
     nio4r (2.5.7)
+    nokogiri (1.11.7-arm64-darwin)
+      racc (~> 1.4)
     nokogiri (1.11.7-x86_64-darwin)
       racc (~> 1.4)
     parallel (1.20.1)
@@ -240,6 +242,7 @@ GEM
     zeitwerk (2.4.2)
 
 PLATFORMS
+  arm64-darwin-23
   x86_64-darwin-20
 
 DEPENDENCIES
@@ -259,7 +262,6 @@ DEPENDENCIES
   redis (~> 4.0)
   rollbar
   rubocop
-  rubocop-ast
   rubocop-rails
   sass-rails (>= 6)
   selenium-webdriver
@@ -271,7 +273,7 @@ DEPENDENCIES
   webpacker (~> 5.0)
 
 RUBY VERSION
-   ruby 3.0.1p64
+   ruby 3.0.6p216
 
 BUNDLED WITH
-   2.2.15
+   2.4.22
