@@ -1,7 +1,7 @@
 <!-- nav -->
 <div class="w-full mx-auto bg-white shadow-sm border-b border-gray-300 px-5 sm:px-10">
-  <div class="container justify-between h-16 flex items-center lg:items-stretch mx-auto">
-    <div class="h-full flex items-center">
+  <div class="justify-between h-16 flex items-center lg:items-stretch mx-auto">
+    <div class="h-full flex items-center flex-1">
       <div class="mr-10 flex items-center">
         <svg width="146px" height="36px" viewBox="0 0 384 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
           <title>63EC04EA-F9B5-4F76-AA27-C6D0890287B3</title>
@@ -106,7 +106,7 @@
         </svg>
         <!-- <h3 class="text-base text-gray-800 font-bold tracking-normal leading-tight ml-3 hidden lg:block">The North</h3> -->
       </div>
-      <ul class="lg:flex items-center h-full hidden">
+      <ul class="lg:flex items-center h-full hidden lg:flex-1">
         <li class="cursor-pointer h-full flex items-center <%= request.path == root_path ? 'border-yellow-400 text-yellow-400 border-b-2' : 'text-gray-800' %> text-sm tracking-normal">
           <%= link_to 'Dashboard', root_path %>
         </li>
@@ -155,7 +155,7 @@
   />
 </div>
 </div> -->
-        <div class="w-full h-full flex">
+        <div x-data="navbarItems" class="w-full h-full flex">
           <div class="w-24 h-full flex items-center justify-center border-l border-r">
             <div class="relative">
               <svg xmlns="http://www.w3.org/2000/svg" class="cursor-pointer text-gray-600 icon icon-tabler icon-tabler-bell" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -170,40 +170,28 @@
           </div>
           <div class="w-full flex items-center justify-end relative cursor-pointer" onclick="dropdownHandler(this)">
             <ul class="p-2 w-40 border-r bg-white absolute rounded left-0 shadow mt-16 top-0 hidden">
-              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none">
-                <div class="flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <path stroke="none" d="M0 0h24v24H0z"/>
-                    <circle cx="12" cy="7" r="4"/>
-                    <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
-                  </svg>
-                  <span class="ml-2">My Profile</span>
-                </div>
-              </li>
-              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-help" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z"/>
-                  <circle cx="12" cy="12" r="9"/>
-                  <line x1="12" y1="17" x2="12" y2="17.01"/>
-                  <path
-                    d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4"
-                    />
-                </svg>
-                <span class="ml-2">Help Center</span>
-              </li>
-              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 hover:text-indigo-700 flex items-center focus:text-indigo-700 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-settings" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z"/>
-                  <path
-                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                    />
-                  <circle cx="12" cy="12" r="3"/>
-                </svg>
-                <span class="ml-2">Account Settings</span>
-              </li>
+              <% @players.reject{|player| player == current_player}.each do |player| %>
+                <li @click="changeCurrentPlayer(<%= player.id %>)" class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z"/>
+                      <circle cx="12" cy="7" r="4"/>
+                      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
+                    </svg>
+                    <span class="ml-2"><%= player.first_name %></span>
+                  </div>
+                </li>
+                <% unless player == @players.last %>
+                  <%= tag.hr class: 'border border-gray-200 my-3' %>
+                <% end %>
+              <% end %>
             </ul>
-            <img class="rounded h-10 w-10 object-cover" src="https://tuk-cdn.s3.amazonaws.com/assets/components/horizontal_navigation/hn_1.png" alt="logo"/>
-            <p class="text-gray-800 text-sm ml-2">Jane Doe</p>
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <path stroke="none" d="M0 0h24v24H0z"/>
+              <circle cx="12" cy="7" r="4"/>
+              <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
+            </svg>
+            <p class="text-gray-800 text-sm ml-2"><%= current_player.first_name %></p>
           </div>
         </div>
       </div>
@@ -276,3 +264,26 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript" charset="utf-8">
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('navbarItems', () => ({
+      async changeCurrentPlayer(player_id) {
+          const response = await fetch('<%= change_player_path %>', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ player_id: player_id })
+          })
+
+          const data = await response.json()
+          console.log({ data })
+          if (data.success) {
+            window.location.reload()
+          }
+      }
+    }))
+  })
+</script>
