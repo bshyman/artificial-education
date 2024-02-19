@@ -2,7 +2,6 @@ class PokemonController < ApplicationController
   layout 'pokemon'
 
   def index
-
   end
 
   def new_question
@@ -16,5 +15,9 @@ class PokemonController < ApplicationController
   end
 
   def show
+  end
+
+  def pokedex
+    @pokemon = Pokemon.all.to_json
   end
 end

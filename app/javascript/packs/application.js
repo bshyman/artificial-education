@@ -13,7 +13,7 @@ require("channels")
 
 // import 'alpine-turbo-drive-adapter'
 import Alpine from 'alpinejs'
-
+import './main.js.erb'
 
 
 // import tailwind into javascript

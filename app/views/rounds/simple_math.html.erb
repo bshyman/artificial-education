@@ -48,23 +48,28 @@
       },
       submitAnswer(event, questionJson) {
         const question = JSON.parse(questionJson)
+          const buttons = document.getElementById('answers-wrapper')
+          buttons.querySelectorAll('button').forEach(button => {
+              button.style.pointerEvents = 'none'
+          })
         let timeout = 500
         if (question.correct_answer.toString() === event.currentTarget.value) {
           party.sparkles(event.currentTarget);
           this.score++
         } else {
           event.currentTarget.classList.add('animate__headShake')
-          timeout = 3000
+          timeout = 2500
           const answersWrapper = document.getElementById('answers-wrapper')
           answersWrapper.querySelector(`[data-answer="${question.correct_answer}"]`).style.borderColor = 'yellow'
           answersWrapper.querySelector(`[data-answer="${question.correct_answer}"]`).style.borderWidth = '2px'
         }
         setTimeout(() => {
           this.answer = ''
-          if (this.currentQuestionNumber < 9) {
+          if (this.currentQuestionNumber < 3) {
             this.currentQuestionNumber++
             this.fetchNextSimpleMathQuestion()
           } else {
+            updateXp(this.score)
             this.showFinal()
           }
         }, timeout)

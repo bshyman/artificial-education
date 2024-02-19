@@ -1,0 +1,19 @@
+window.updateXp = async (xp, userId) => {
+    console.log('Updating XP to', xp)
+    const url = `/users/${userId}/update_xp`
+    console.log({url})
+    const response = await fetch(url, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+            xp: xp
+        })
+    })
+
+    if (response.ok) {
+        console.log('XP updated successfully')
+    }
+}
