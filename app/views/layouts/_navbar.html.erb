@@ -116,6 +116,16 @@
         <li class="cursor-pointer h-full flex items-center <%= request.path == users_path ? 'border-yellow-400 text-yellow-400 border-b-2' : 'text-gray-800' %> text-sm mr-10 tracking-normal">
           <%= link_to 'Students', users_path %>
         </li>
+
+        <li class="h-full flex items-center ml-auto">
+          <%= render partial: 'layouts/score_progress_bar' %>
+        </li>
+        <li class="h-full flex items-center mr-4">
+          <div class="flex flex-col items-center">
+            <span class="text-xs text-gray-400">LEVEL</span>
+            <span class="text-sm font-bold text-gray-400"><%= current_user.level %></span>
+          </div>
+        </li>
       </ul>
     </div>
     <div class="h-full lg:flex items-center justify-end hidden">

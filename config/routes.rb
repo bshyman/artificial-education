@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   resources :players
-  resources :users
+  resources :users do
+    patch 'update_xp', to: 'users#update_xp', on: :member
+  end
   resources :pokemon, except: :destroy do
     get 'new_question' => 'pokemon#new_question', on: :collection
   end
