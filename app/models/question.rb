@@ -17,9 +17,15 @@ class Question < ApplicationRecord
   def missing_letter_question_hash(pokemon, current_user_id)
     chars   = pokemon.name.chars
     correct = chars.sample
-    answers = ('a'..'z').without(correct).sample(3).push(correct).shuffle
+    answers = [correct]
+    while answers.size < 9 do
+      incorrect_answer = ('a'..'z').without(correct).sample
+      next if answers.include?(incorrect_answer)
+      answers << incorrect_answer
+    end
+    answers.shuffle!
     # round = Game.pokemon_spellcheck.rounds.where(user_id: current_user_id).last
-    
+
     {
       name: pokemon.name,
       id: pokemon.id,
