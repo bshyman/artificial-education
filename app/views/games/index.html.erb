@@ -18,6 +18,7 @@
 <div class="container w-11/12 mx-auto grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 my-12 gap-8">
   <%= render partial: 'game_tile', locals: { subject: 'spelling', image_path: 'pokemon_poster.jpg', name: 'Pokemon Spellcheck', path: pokemon_index_path } %>
   <%= render partial: 'game_tile', locals: { subject: 'math', image_path: 'math_blackboard.jpg', name: "Multiplication", path: game_new_simple_math_round_path(game_id: Game.simple_math.id, operator: 'multiplication') } %>
+  <%= render partial: 'game_tile', locals: { subject: 'logic', image_path: '', name: "Collections", path: game_new_collections_round_path(Game.collections.id) } %>
 </div>
 
 <script>
