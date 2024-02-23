@@ -45,12 +45,4 @@ class OpenaiService
       })
     JSON.parse(response.dig('choices', 0, 'message', 'content'))
   end
-
-  def create_prompt(prompt)
-    @client.create_prompt(prompt: prompt)
-  end
-
-  def create_completion(prompt, max_tokens: 100)
-    @client.create_completion(prompt: prompt, max_tokens: max_tokens)
-  end
 end

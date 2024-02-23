@@ -2,10 +2,22 @@
   <div class="flex flex-col justify-center items-center h-screen w-screen">
 
     <div class="grid grid-cols-4">
-      <div x-show="isGroupComplete(1)" x-text="textContentForGroup(1)" data-group="1" class="bg-groupingOne col-span-4 flex justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px"></div>
-      <div x-show="isGroupComplete(2)" x-text="textContentForGroup(2)" data-group="2" class="bg-groupingTwo col-span-4 flex justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px"></div>
-      <div x-show="isGroupComplete(3)" x-text="textContentForGroup(3)" data-group="3" class="bg-groupingThree col-span-4 flex justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px"></div>
-      <div x-show="isGroupComplete(4)" x-text="textContentForGroup(4)" data-group="4" class="bg-groupingFour col-span-4 flex justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px"></div>
+      <div x-show="isGroupComplete(1)" data-group="1" class="bg-groupingOne col-span-4 flex flex-col gap-2 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+        <div x-text="textContentForGroup(1)"></div>
+        <div x-text="wordsForGroup(1)" class="font-light text-lg"></div>
+      </div>
+      <div x-show="isGroupComplete(2)" data-group="2" class="bg-groupingTwo col-span-4 flex flex-col gap-2 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+        <div x-text="textContentForGroup(2)"></div>
+        <div x-text="wordsForGroup(2)" class="font-light text-lg"></div>
+      </div>
+      <div x-show="isGroupComplete(3)" data-group="3" class="bg-groupingThree col-span-4 flex flex-col gap-2 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+        <div x-text="textContentForGroup(3)"></div>
+        <div x-text="wordsForGroup(3)" class="font-light text-lg"></div>
+      </div>
+      <div x-show="isGroupComplete(4)" data-group="4" class="bg-groupingFour col-span-4 flex flex-col gap-2 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+        <div x-text="textContentForGroup(4)"></div>
+        <div x-text="wordsForGroup(4)" class="font-light text-lg"></div>
+      </div>
 
       <% JSON.parse(@collections)['all_words'].shuffle.each do |word| %>
         <a @click="makeSelection" :class="selections.includes('<%= word %>') ? 'bg-red-300' : 'bg-gray-300'" class="cursor-pointer text-2xl select-none p-4 m-2 w-40 h-20 rounded-lg flex justify-center items-center hover:opacity-50" data-word="<%= word %>">
@@ -13,11 +25,19 @@
         </a>
       <% end %>
     </div>
-    <div class="flex justify-center my-6">
+
+    <div x-show="mistakesRemaining > 0" x-transition class="flex justify-center items-center gap-2 my-6 select-none">
+      <span class="italic font-light text-lg">Mistakes Remaining:</span>
+      <span x-show="mistakesRemaining > 0">&#9679;</span>
+      <span x-show="mistakesRemaining > 1">&#9679;</span>
+      <span x-show="mistakesRemaining > 2">&#9679;</span>
+    </div>
+
+    <div class="flex justify-center my-6 gap-3">
       <button x-show="selections.length == 4" @click="deselectAll" id='deselectAll' class="btn danger post-game-button">Deselect
         All
       </button>
-      <button x-show="completeGroups.length == 4" @click="location.reload()" class="btn secondary post-game-button">Play
+      <button x-show="completeGroups.length == 4 || mistakesRemaining == 0" @click="location.reload()" class="btn secondary post-game-button">Play
         Again
       </button>
     </div>
@@ -31,26 +51,21 @@
         -o-transition: all 0.5s ease;
         transition: all 0.5s ease;
     }
-
-    .post-game-button {
-        /*opacity: 0;*/
-    }
 </style>
 
 <script type="text/javascript" charset="utf-8">
     document.addEventListener('alpine:init', () => {
         Alpine.data('collections', () => ({
             wordsData: <%= @collections.html_safe %>,
-            init() {
-                console.log('wordsData', this.wordsData)
-            },
             selections: [],
             connections: [],
             completeGroups: [],
+            mistakesRemaining: 3,
             makeSelection(e) {
                 if (this.selections.includes(e.target.innerText)) {
                     this.selections = this.selections.filter((word) => word !== e.target.innerText)
                 } else {
+                    if (this.selections.length === 4) return
                     this.selections.push(e.target.innerText)
                 }
                 if (this.selections.length === 4) {
@@ -60,7 +75,12 @@
                         this.selections = []
                         if (this.completeGroups.length === 4) this.gameOver()
                     } else {
-                        document.getElementById('deselectAll').style.opacity = '1'
+                        if (this.mistakesRemaining > 0) {
+                            this.mistakesRemaining--
+                            document.getElementById('deselectAll').style.opacity = '1'
+                        } else {
+                            this.gameOver()
+                        }
                     }
                 }
             },
@@ -92,11 +112,18 @@
                 e.target.style.display = 'none'
             },
             textContentForGroup(group) {
-                let groupData = this.wordsData.groupings.find((grouping) => grouping.difficulty == group)
+                let groupData = this.findGroupForDifficulty(group)
                 return groupData.commonality.toUpperCase()
             },
+            wordsForGroup(group) {
+                let groupData = this.findGroupForDifficulty(group)
+                return groupData.words.join(', ')
+            },
             isGroupComplete(group) {
-                return this.completeGroups.includes(group)
+                return this.completeGroups.includes(group.toString())
+            },
+            findGroupForDifficulty(difficulty) {
+                return this.wordsData.groupings.find((grouping) => grouping.difficulty == difficulty)
             },
             gameOver() {
                 document.querySelectorAll('.post-game-button').forEach((button) => {
