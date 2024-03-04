@@ -1,0 +1,75 @@
+<% if current_player.xp.positive? %>
+  <div class="neon-bar">
+    <progress class='bar' value='0' max='100'></progress>
+    <span class='bar__value w-8'>0%</span>
+  </div>
+<% end %>
+<style>
+    .neon-bar {
+        padding: 0;
+        margin-inline: 24px;
+        gap: 32px;
+        display: flex;
+        align-items: center;
+    }
+
+    :root {
+        --progress-height: 0.75em;
+        --progress-width: 300px;
+        /*--progress-padding: 0.3em;*/
+        --progress-value-color: var(--neon-yellow);
+        --value-color: #fc0349; /*text percentage*/
+        --value-size: 1.2em;
+        --neon-yellow: rgba(167, 250, 42, 0.73);
+        --neon-yellow-glow: 0px 0px 30px 5px var(--neon-yellow);
+    }
+
+    .bar {
+        -webkit-appearance: none;
+        height: var(--progress-height);
+        width: var(--progress-width);
+        -webkit-box-shadow: var(--neon-yellow-glow);
+        -moz-box-shadow: var(--neon-yellow-glow);
+        box-shadow: var(--neon-yellow-glow);
+
+        &::-webkit-progress-bar {
+            padding: var(--progress-padding);
+            border-radius: calc(var(--progress-height) / 2);
+            /*background: var(--neon-yellow);*/
+            background: #fff;
+
+        }
+
+        &::-webkit-progress-value {
+            background: var(--progress-value-color);
+            border-radius: calc(var(--progress-height) / 2);
+        }
+    }
+
+    .bar__value {
+        color: var(--value-color);
+        font-size: var(--value-size);
+        line-height: var(--progress-height);
+        letter-spacing: 1px;
+        /*text-shadow: 0 0 .3em darken($ value-color, 1),*/
+        /*0 0 .6em darken(var(--value-color), 6);*/
+        margin-left: .5em;
+    }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+    const progressBar = document.querySelector(".bar"),
+        progressBarValue = document.querySelector('.bar__value');
+    let value = 0;
+    const max = <%= current_player.level_progress %>;
+
+    let anim = setInterval(() => {
+        if (value == max) {
+            clearInterval(anim);
+        } else {
+            value += 1;
+            progressBar.value = value;
+            progressBarValue.innerText = value + '%';
+        }
+    }, 80);
+</script>

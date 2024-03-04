@@ -20,7 +20,7 @@
       <div class="col-span-3 border-l-2 border-green-600  shadow p-6">
         <%#= render partial: 'points_progress_bar' %>
 
-        <div class="text-4xl mt-20 mx-auto text-center text-white" style="font-size: 10rem;">
+        <div class="text-4xl mt-20 mx-auto text-center text-white">
           <span x-text="correctlyAnswered"></span> / <span x-text="currentQuestion - 1"></span></div>
 
         <!--      <div class="h-32 w-32 mx-auto bg-white rounded-full shadow border-8 border-indigo-700 flex items-center justify-center">-->
@@ -56,92 +56,91 @@
         opacity: 0.2;
     }
 </style>
-
 <script type="text/javascript" charset="utf-8">
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('pokemonGame', () => ({
-      currentQuestion: 1,
-      correctlyAnswered: 0,
-      question: {
-        problem: '',
-        correct: '',
-        answers: []
-      },
-      answerResults: [],
-      score: 0,
-      submitAnswer(event) {
-        if (this.currentQuestion > 10) {
-          return
-        }
-        let correct = false;
-        if (event.type === 'click') {
-          if (event.currentTarget.textContent.toLowerCase() === this.question.correct.toLowerCase()) {
-            correct = true;
-          }
-        } else if (event.type === 'keypress') {
-          if (event.key.toLowerCase() === this.question.correct.toLowerCase()) {
-            correct = true
-          }
-        }
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('pokemonGame', () => ({
+            currentQuestion: 1,
+            correctlyAnswered: 0,
+            question: {
+                problem: '',
+                correct: '',
+                answers: []
+            },
+            answerResults: [],
+            score: 0,
+            submitAnswer(event) {
+                if (this.currentQuestion > 10) {
+                    return
+                }
+                let correct = false;
+                if (event.type === 'click') {
+                    if (event.currentTarget.textContent.toLowerCase() === this.question.correct.toLowerCase()) {
+                        correct = true;
+                    }
+                } else if (event.type === 'keypress') {
+                    if (event.key.toLowerCase() === this.question.correct.toLowerCase()) {
+                        correct = true
+                    }
+                }
 
-        this.answerResults.push(correct)
+                this.answerResults.push(correct)
 
-        if (correct) {
-          this.correctlyAnswered++
-          this.currentQuestion++
-        } else {
-          this.currentQuestion++
-        }
-        if (this.currentQuestion <= 10) {
-          this.fetchNextPokemonQuestion()
-        } else {
-          this.gameOver()
-        }
-        this.percentCorrect()
-      },
-      async fetchNextPokemonQuestion() {
-        const response = await fetch('<%= new_question_pokemon_index_path %>')
-        const data = await response.json()
-        this.question = data.question
-        document.getElementById('pokemon-spellcheck-question-wrapper').innerHTML = data.partial
-
-      },
-      percentCorrect() {
-        this.score = Math.round((this.correctlyAnswered / 10) * 100)
-        return this.score
-      },
-      gameOver() {
-
-        swal.fire({
-          title: `Game Over! <br> ${this.correctlyAnswered} out of 10`,
-          text: "Play again? ",
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, play again!',
-          reverseButtons: true,
-          cancelButtonText: 'No thanks!',
-          allowOutsideClick: false,
-          stopKeydownPropagation: false,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location = '<%= game_new_pokemon_round_path %>'
-          } else {
-            window.location = '<%= games_path %>'
-          }
-        })
-      },
-      determineOpacity(questionNumber) {
-        if (this.currentQuestion === questionNumber) {
-          return 'animate-pulse'
-        } else if (this.currentQuestion < questionNumber) {
-          return 'default'
-        } else if (this.answerResults[questionNumber - 1]) {
-          return 'correct'
-        } else {
-          return 'incorrect'
-        }
-      }
-    }))
-  })
+                if (correct) {
+                    this.correctlyAnswered++
+                    this.currentQuestion++
+                } else {
+                    this.currentQuestion++
+                }
+                if (this.currentQuestion <= 10) {
+                    this.fetchNextPokemonQuestion()
+                } else {
+                    updateXp(this.correctlyAnswered)
+                    this.gameOver()
+                }
+                this.percentCorrect()
+            },
+            async fetchNextPokemonQuestion() {
+                console.log('fetching next question')
+                const response = await fetch('<%= new_question_pokemon_index_path %>')
+                const data = await response.json()
+                this.question = data.question
+                document.getElementById('pokemon-spellcheck-question-wrapper').innerHTML = data.partial
+            },
+            percentCorrect() {
+                this.score = Math.round((this.correctlyAnswered / 10) * 100)
+                return this.score
+            },
+            gameOver() {
+                swal.fire({
+                    title: `Game Over! <br> ${this.correctlyAnswered} out of 10`,
+                    text: "Play again? ",
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, play again!',
+                    reverseButtons: true,
+                    cancelButtonText: 'No thanks!',
+                    allowOutsideClick: false,
+                    stopKeydownPropagation: false,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location = '<%= game_new_pokemon_round_path %>'
+                    } else {
+                        window.location = '<%= games_path %>'
+                    }
+                })
+            },
+            determineOpacity(questionNumber) {
+                if (this.currentQuestion === questionNumber) {
+                    return 'animate-pulse'
+                } else if (this.currentQuestion < questionNumber) {
+                    return 'default'
+                } else if (this.answerResults[questionNumber - 1]) {
+                    return 'correct'
+                } else {
+                    return 'incorrect'
+                }
+            }
+        }))
+    })
 </script>

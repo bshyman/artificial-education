@@ -7,15 +7,20 @@
   <span style="font-size: 5rem;">
     <%= question.content.sub('*', 'x') %>
   </span>
-  <label>
-    <input id=`question-${currentQuestionNumber}` @input="validateChar($event)" @keydown.enter="submitAnswer($event, '<%= question.to_json %>')" x-text="answer" x-model="answer" class="bg-transparent mx-6 p-1 border-b inline-block focus:outline-none whitespace-nowrap overflow-hidden " style="width: 200px;" autofocus></input>
-  </label>
   <br><br>
   <h4>Choose the correct answer</h4>
 
-  <div id='answers-wrapper' class="my-4 w-2/3 mx-auto flex justify-evenly">
+  <div id='answers-wrapper' class="my-4 w-2/3 mx-auto flex justify-evenly prevent-select">
     <% [question.correct_answer, *question.incorrect_answers].shuffle.each do |answer| %>
-      <button data-answer="<%= answer %>" @click="submitAnswer($event, '<%= question.to_json %>')" value="<%= answer.to_i %>" class="border border-white rounded-sm px-6 py-4 hover:opacity-50 animate__animated hover:-translate-y-1 transform transition"><%= answer %></button>
+      <button data-answer="<%= answer %>" @click.once="submitAnswer($event, '<%= question.to_json %>')" value="<%= answer.to_i %>" class="border border-white rounded-sm px-6 py-4 hover:opacity-50 animate__animated hover:-translate-y-1 transform transition prevent-select"><%= answer %></button>
     <% end %>
   </div>
 </div>
+
+<style>
+    .prevent-select {
+        -webkit-user-select: none; /* Safari */
+        -ms-user-select: none; /* IE 10 and IE 11 */
+        user-select: none; /* Standard syntax */
+    }
+</style>
