@@ -2,5 +2,21 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* Add custom CSS here */
+@layer components {
+  .btn {
+    @apply rounded-md border px-3.5 py-2.5 text-sm font-semibold shadow-sm transform transition duration-300 ease-in-out disabled:pointer-events-none disabled:opacity-50 select-none;
+
+    &.primary {
+      @apply border-blue-600 text-white bg-blue-600 hover:bg-blue-400 hover:border-white;
+    }
+
+    &.secondary {
+      @apply border-gray-600 text-gray-600 bg-white hover:bg-gray-400 hover:text-white hover:border-white;
+    }
+
+    &.danger {
+      @apply border-red-600 border-2 text-red-600 bg-white hover:bg-red-400 hover:text-white hover:border-white;
+    }
+  }
+}
 

@@ -17,4 +17,8 @@ class Game < ApplicationRecord
     Round.create!(game_id: id, potential_value: points)
   end
 
+  def self.collections
+    @collections = Game.find_by(name: 'Collections')
+  end
+
 end

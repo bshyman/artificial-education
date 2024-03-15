@@ -1,0 +1,150 @@
+<div x-cloak x-data="collections" class="">
+  <div class="flex flex-col justify-center items-center h-screen w-screen">
+
+    <div class="grid grid-cols-4" :class="{'pointer-events-none': isGameOver()}">
+      <div x-show="isGroupComplete(1) || viewingResults" data-group="1" class="bg-groupingOne col-span-4 flex flex-col gap-1 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+        <div x-text="textContentForGroup(1)"></div>
+        <div x-text="wordsForGroup(1)" class="font-light text-lg"></div>
+      </div>
+      <div x-show="isGroupComplete(2) || viewingResults" data-group="2" class="bg-groupingTwo col-span-4 flex flex-col gap-1 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+        <div x-text="textContentForGroup(2)"></div>
+        <div x-text="wordsForGroup(2)" class="font-light text-lg"></div>
+      </div>
+      <div x-show="isGroupComplete(3) || viewingResults" data-group="3" class="bg-groupingThree col-span-4 flex flex-col gap-1 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+        <div x-text="textContentForGroup(3)"></div>
+        <div x-text="wordsForGroup(3)" class="font-light text-lg"></div>
+      </div>
+      <div x-show="isGroupComplete(4) || viewingResults" data-group="4" class="bg-groupingFour col-span-4 flex flex-col gap-1 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+        <div x-text="textContentForGroup(4)"></div>
+        <div x-text="wordsForGroup(4)" class="font-light text-lg"></div>
+      </div>
+
+      <% JSON.parse(@collections)['all_words'].shuffle.each do |word| %>
+        <a x-show="!viewingResults" @click="makeSelection" :class="selections.includes('<%= word %>') ? 'bg-red-300' : 'bg-gray-300'" class="cursor-pointer text-2xl select-none p-4 m-2 w-40 h-20 rounded-lg flex justify-center items-center hover:opacity-50" data-word="<%= word %>">
+          <%= word %>
+        </a>
+      <% end %>
+    </div>
+
+    <div :class="{'opacity-20': isGameOver() }" class="flex justify-center items-center gap-2 my-6 select-none">
+      <span class="italic font-light text-lg">Mistakes Remaining:</span>
+      <span x-transition x-show="mistakesRemaining > 0">&#9679;</span>
+      <span x-transition x-show="mistakesRemaining > 1">&#9679;</span>
+      <span x-transition x-show="mistakesRemaining > 2">&#9679;</span>
+    </div>
+
+    <div class="flex justify-center my-4 gap-3">
+      <div :class="{'cursor-not-allowed': selections.length == 0}">
+        <button :disabled="selections.length == 0 || isGameOver()" @click="deselectAll" id='deselectAll' class="btn danger post-game-button">Deselect
+          All
+        </button>
+      </div>
+      <button x-show="completeGroups.length == 4 || mistakesRemaining == 0" @click="location.reload()" class="btn secondary post-game-button">Play
+        Again
+      </button>
+      <div x-show="!isGameOver()" :class="{'cursor-not-allowed': selections.length != 4 }">
+        <button @click="handleSubmittedAnswer" :disabled="selections.length != 4" class="btn secondary">Submit</button>
+      </div>
+    </div>
+    <div x-show="isGameOver && mistakesRemaining == 0" class="flex-justify-center">
+      <button @click="toggleViewResults" class="btn secondary">View Results</button>
+    </div>
+  </div>
+</div>
+
+<style>
+    a {
+        -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+        -o-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+    }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('collections', () => ({
+            wordsData: <%= @collections.html_safe %>,
+            selections: [],
+            connections: [],
+            completeGroups: [],
+            mistakesRemaining: 3,
+            viewingResults: false,
+            makeSelection(e) {
+                if (this.selections.includes(e.target.innerText)) {
+                    this.selections = this.selections.filter((word) => word !== e.target.innerText)
+                } else {
+                    if (this.selections.length === 4) return
+                    this.selections.push(e.target.innerText)
+                }
+            },
+            handleSubmittedAnswer() {
+                if (this.selections.length === 4) {
+                    let correct = this.checkAnswers()
+                    if (correct) {
+                        this.connections.push(this.selections)
+                        this.selections = []
+                        if (this.completeGroups.length === 4) this.gameOver()
+                    } else {
+                        if (this.mistakesRemaining > 0) {
+                            this.mistakesRemaining--
+                        } else {
+                            this.gameOver()
+                        }
+                    }
+                }
+            },
+            checkAnswers() {
+                let correct = this.wordsData.groupings.find((grouping) => {
+                    return grouping.words.every((word) => this.selections.includes(word))
+                })
+                if (correct) {
+                    document.querySelectorAll('[data-word]').forEach((word) => {
+                        if (this.selections.includes(word.dataset.word)) {
+                            word.remove()
+                        } else if (this.selections.includes(word.dataset.word)) {
+                            return word.classList.add('bg-red-600')
+                        }
+                    })
+                    this.completeGroups.push(correct.difficulty)
+                } else {
+                    console.log('incorrect')
+                    return false
+                }
+                return correct;
+            },
+            deselectAll(e) {
+                this.selections = []
+                document.querySelectorAll('[data-word]').forEach((word) => {
+                    word.classList.remove('bg-red-300')
+                    word.classList.add('bg-gray-300')
+                })
+            },
+            textContentForGroup(group) {
+                let groupData = this.findGroupForDifficulty(group)
+                return groupData.commonality.toUpperCase()
+            },
+            wordsForGroup(group) {
+                let groupData = this.findGroupForDifficulty(group)
+                return groupData.words.join(', ')
+            },
+            isGroupComplete(group) {
+                return this.completeGroups.includes(group.toString())
+            },
+            findGroupForDifficulty(difficulty) {
+                return this.wordsData.groupings.find((grouping) => grouping.difficulty == difficulty)
+            },
+            gameOver() {
+                document.querySelectorAll('.post-game-button').forEach((button) => {
+                    button.style.display = 'inline-block'
+                })
+            },
+            isGameOver() {
+                return this.completeGroups.length === 4 || this.mistakesRemaining === 0
+            },
+            toggleViewResults(){
+                this.viewingResults = !this.viewingResults
+            }
+        }))
+    })
+</script>
