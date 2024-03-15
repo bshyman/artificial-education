@@ -2,19 +2,19 @@
   <div class="flex flex-col justify-center items-center h-screen w-screen">
 
     <div class="grid grid-cols-4" :class="{'pointer-events-none': isGameOver()}">
-      <div x-show="isGroupComplete(1) || viewingResults" data-group="1" class="bg-groupingOne col-span-4 flex flex-col gap-2 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+      <div x-show="isGroupComplete(1) || viewingResults" data-group="1" class="bg-groupingOne col-span-4 flex flex-col gap-1 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
         <div x-text="textContentForGroup(1)"></div>
         <div x-text="wordsForGroup(1)" class="font-light text-lg"></div>
       </div>
-      <div x-show="isGroupComplete(2) || viewingResults" data-group="2" class="bg-groupingTwo col-span-4 flex flex-col gap-2 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+      <div x-show="isGroupComplete(2) || viewingResults" data-group="2" class="bg-groupingTwo col-span-4 flex flex-col gap-1 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
         <div x-text="textContentForGroup(2)"></div>
         <div x-text="wordsForGroup(2)" class="font-light text-lg"></div>
       </div>
-      <div x-show="isGroupComplete(3) || viewingResults" data-group="3" class="bg-groupingThree col-span-4 flex flex-col gap-2 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+      <div x-show="isGroupComplete(3) || viewingResults" data-group="3" class="bg-groupingThree col-span-4 flex flex-col gap-1 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
         <div x-text="textContentForGroup(3)"></div>
         <div x-text="wordsForGroup(3)" class="font-light text-lg"></div>
       </div>
-      <div x-show="isGroupComplete(4) || viewingResults" data-group="4" class="bg-groupingFour col-span-4 flex flex-col gap-2 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
+      <div x-show="isGroupComplete(4) || viewingResults" data-group="4" class="bg-groupingFour col-span-4 flex flex-col gap-1 justify-center items-center text-2xl font-semibold h-20 capitalize rounded-lg p-4 m-2" style="min-width: 675px">
         <div x-text="textContentForGroup(4)"></div>
         <div x-text="wordsForGroup(4)" class="font-light text-lg"></div>
       </div>
@@ -26,11 +26,11 @@
       <% end %>
     </div>
 
-    <div x-show="mistakesRemaining > 0" x-transition class="flex justify-center items-center gap-2 my-6 select-none">
+    <div :class="{'opacity-20': isGameOver() }" class="flex justify-center items-center gap-2 my-6 select-none">
       <span class="italic font-light text-lg">Mistakes Remaining:</span>
-      <span x-show="mistakesRemaining > 0">&#9679;</span>
-      <span x-show="mistakesRemaining > 1">&#9679;</span>
-      <span x-show="mistakesRemaining > 2">&#9679;</span>
+      <span x-transition x-show="mistakesRemaining > 0">&#9679;</span>
+      <span x-transition x-show="mistakesRemaining > 1">&#9679;</span>
+      <span x-transition x-show="mistakesRemaining > 2">&#9679;</span>
     </div>
 
     <div class="flex justify-center my-4 gap-3">
@@ -42,7 +42,7 @@
       <button x-show="completeGroups.length == 4 || mistakesRemaining == 0" @click="location.reload()" class="btn secondary post-game-button">Play
         Again
       </button>
-      <div :class="{'cursor-not-allowed': selections.length != 4 || isGameOver()}">
+      <div x-show="!isGameOver()" :class="{'cursor-not-allowed': selections.length != 4 }">
         <button @click="handleSubmittedAnswer" :disabled="selections.length != 4" class="btn secondary">Submit</button>
       </div>
     </div>

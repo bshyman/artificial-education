@@ -1,6 +1,6 @@
 class OpenaiService
   def initialize
-    @client = OpenAI::Client.new(access_token: Rails.application.credentials.openai[:api_key])
+    @client = OpenAI::Client.new(access_token: ENV['OPENAI_API_KEY'])
   end
 
   def send_message
