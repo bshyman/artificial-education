@@ -1,0 +1,114 @@
+<div x-data="trivia">
+  <div class="flex justify-end mr-24 mt-12 ">
+    <h3 class="text-xl font-semibold text-gray-600"><span x-text="correctCount"></span> /
+      <span x-text="currentQuestion"></span></h3>
+  </div>
+  <div class="flex flex-col mt-12 items-center h-screen">
+
+    <div class="flex font-semibold text-2xl text-center text-gray-700 mb-16 max-w-3/4">
+      <span x-text="currentQuestion + 1"></span>.&nbsp;
+      <h3 x-html="question.question" class="">
+    </div>
+    </h3>
+    <div class="flex flex-col gap-4">
+      <template x-for="answer in question.answers" :key="answer" class="w-min-800px">
+        <div @click="makeSelection" x-text="answer" x-transition :data-text="answer" :class=" {'hover:opacity-50': !answered}" class="w-800px bg-gray-100 rounded-lg p-4 shadow-md flex justify-center items-center text-xl font-medium tracking-wider leading-3  cursor-pointer" style="height: 80px;">
+        </div>
+      </template>
+    </div>
+    <div x-show="answered" class="mt-8">
+      <button x-show="!gameOver" @click="advanceQuestion" class="bg-blue-500 text-white px-4 py-2 rounded-lg cursor-pointer">Next</button>
+<!--      <button x-show="gameOver" @click="advanceQuestion" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Play-->
+<!--        Again-->
+<!--      </button>-->
+    </div>
+  </div>
+</div>
+
+<style>
+    div.correct {
+        border: 3px solid yellowgreen;
+        background-color: yellowgreen;
+        opacity: 0.7;
+    }
+
+    div.incorrect {
+        border: 3px solid tomato;
+        background-color: tomato;
+        opacity: 0.7;
+    }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('trivia', () => ({
+            questions: <%== @questions.to_json %>,
+            question: {
+                content: '',
+                answers: [],
+                correct_answer: ''
+            },
+            answered: false,
+            currentQuestion: 0,
+            correctCount: 0,
+            gameOver: false,
+            init() {
+                this.updateCurrentQuestion()
+            },
+            updateCurrentQuestion() {
+                let currentQuestionObject = this.questions[this.currentQuestion];
+                this.question = this.formattedQuestion(currentQuestionObject);
+            },
+            makeSelection(e) {
+                if (this.answered) {
+                    return;
+                }
+                this.answered = true;
+                if (e.target.innerText === this.question.correct_answer) {
+                    this.correctCount++;
+                    e.target.classList.add('correct');
+                } else {
+                    e.target.classList.add('incorrect');
+                    document.querySelectorAll('[data-text]').forEach((el) => {
+                        if (el.innerText === this.question.correct_answer) {
+                            el.classList.add('correct');
+                            return
+                        }
+                    });
+
+                }
+                this.currentQuestion++;
+            },
+            formattedQuestion(question) {
+                return {
+                    question: question.content,
+                    answers: question.incorrect_answers.concat(question.correct_answer).sort(() => Math.random() - 0.5),
+                    correct_answer: question.correct_answer
+                }
+            },
+            advanceQuestion() {
+                if (this.currentQuestion == 9) {
+                    this.currentQuestion = 10;
+                    this.gameOver = true;
+                    swal.fire({
+                        title: 'Game Over',
+                        text: `You got ${this.correctCount} out of 10 correct!`,
+                        icon: 'success',
+                        showCancelButton: true,
+                        cancelButtonText: 'Maybe Later',
+                        confirmButtonText: 'Play Again',
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            location.reload()
+                        } else if (result.isDismissed) {
+                            location.href = '<%= root_path %>'
+                        }
+                    });
+                } else {
+                    this.updateCurrentQuestion();
+                    this.answered = false;
+                }
+            }
+        }));
+    });
+</script>

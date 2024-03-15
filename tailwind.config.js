@@ -680,6 +680,7 @@ module.exports = {
             screen: '100vw',
             min: 'min-content',
             max: 'max-content',
+            '800px': '800px',
         }),
         zIndex: {
             auto: 'auto', 0: '0', 10: '10', 20: '20', 30: '30', 40: '40', 50: '50',

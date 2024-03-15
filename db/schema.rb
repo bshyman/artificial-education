@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_25_024832) do
+ActiveRecord::Schema.define(version: 2024_02_26_040635) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,8 @@ ActiveRecord::Schema.define(version: 2021_08_25_024832) do
     t.string "correct_answer"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "difficulty"
+    t.string "question_type"
     t.index ["game_id"], name: "index_questions_on_game_id"
     t.index ["user_id"], name: "index_questions_on_user_id"
   end

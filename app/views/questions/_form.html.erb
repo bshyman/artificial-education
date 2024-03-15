@@ -1,0 +1,226 @@
+<div x-data="newQuestion" class="mx-12 mt-6">
+  <form>
+    <div class="space-y-12 sm:space-y-16">
+      <div>
+        <h2 class="text-base font-semibold leading-7 text-gray-900">New Question</h2>
+        <p class="mt-1 max-w-2xl text-sm leading-6 text-gray-600">Create a question to be included in various games</p>
+
+        <div class="mt-10 space-y-8 border-b border-gray-900/10 pb-12 sm:space-y-0 sm:divide-y sm:divide-gray-900/10 sm:border-t sm:pb-0">
+          <!-- Question -->
+          <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+            <label for="username" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">Question</label>
+            <div class="mt-2 sm:col-span-2 sm:mt-0">
+              <div class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md">
+                <span class="flex select-none items-center pl-3 text-gray-500 sm:text-sm"></span>
+                <input x-model="question" type="text" name="question" id="question" autocomplete="question" class="block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder="What is the capital of Indonesia?">
+              </div>
+            </div>
+          </div>
+          <!-- Type -->
+          <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+            <label for="type" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">Type</label>
+            <div class="mt-2 sm:col-span-2 sm:mt-0">
+              <select x-model="type" id="type-select" name="type" autocomplete="type" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                <% questionable_types_for_select.each do |type_for_display, type| %>
+                  <option value="<%= type %>" data-type="<%= type %>"><%= type_for_display %></option>
+                <% end %>
+              </select>
+            </div>
+          </div>
+
+          <!-- Difficulty -->
+          <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+            <label for="type" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">Difficulty
+              Level</label>
+            <div class="mt-2 sm:col-span-2 sm:mt-0">
+              <select x-model="difficulty" id="level-select" name="level" autocomplete="level" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6">
+                <% difficulty_options.each do |level| %>
+                  <option data-difficulty="<%= level %>"><%= level.humanize %></option>
+                <% end %>
+              </select>
+            </div>
+          </div>
+
+          <div x-show="type == 'TriviaQuestion'">
+            <div class="sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:py-6">
+              <div class="flex flex-col">
+                <label for="incorrect_answer_" class="block text-sm font-medium leading-6 text-gray-900 sm:pt-1.5">
+                  Answers</label>
+                <div class="mt-1 text-sm leading-6 text-gray-500">
+                  Select the correct answer
+                </div>
+              </div>
+
+              <div class="mt-2 sm:col-span-2 sm:mt-0">
+                <% (1..4).each do |number| %>
+                  <div class="flex items-center gap-6">
+                    <div class="flex flex-1 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md my-3">
+                      <span class="flex select-none items-center pl-3 text-gray-500 sm:text-sm"><%= number %>.</span>
+                      <input type="text" name="incorrect_answer_<%= number %>" id="incorrect_answer_<%= number %>" autocomplete="incorrect_answer_" class="answer_input block flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6" placeholder="Enter an answer">
+                    </div>
+
+                    <div class=" flex items-center gap-x-3">
+                      <input @change="selectCorrect" data-number="<%= number %>" name="correctRadio" type="radio" class="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600">
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="flex flex-col gap-1">
+        <div class="flex justify-between items-start gap-x-6">
+          <div>
+            <% if local_assigns[:question] %>
+              <button @click.prevent="deleteQuestion" class="btn btn-danger">Delete</button>
+            <% end %>
+          </div>
+          <div class="flex flex-col items-end gap-1">
+            <div class="flex items-center gap-x-6">
+              <button @click="window.location = '<%= trivia_questions_path %>'" type="button" class="text-sm font-semibold leading-6 text-gray-900">Cancel</button>
+              <button @click.prevent="submit" type="submit" class="inline-flex justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+            </div>
+            <div x-text="errorMessage" class="error text-red-600 mt-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('newQuestion', () => ({
+                question: '',
+                answers: [],
+                answer: '',
+                type: 'TriviaQuestion',
+                difficulty: 'Easy',
+                errorMessage: '',
+                init() {
+                    const question = <%== defined?(question) ? question : false  %>;
+                    if (question) {
+                        this.question = question.content;
+                        this.answer = question.correct_answer;
+                        document.getElementById(`incorrect_answer_1`).value = this.answer
+                        document.querySelector(`input[name=correctRadio][data-number='1']`).checked = true
+                        this.answers = question.incorrect_answers;
+                        this.answers.forEach((answer, index) => {
+                            document.getElementById(`incorrect_answer_${index + 2}`).value = answer
+                        })
+                        this.type = question.question_type;
+                        this.difficulty = question.difficulty;
+                        if (<%= @errors.present? %>) {
+                            this.errorMessage = '<%= @errors %>';
+                        }
+
+                    }
+                },
+                populateAnswers() {
+                    let incorrectAnswers = []
+                    document.querySelectorAll('.answer_input').forEach((input) => {
+                        if (input.value.length > 0) {
+                            incorrectAnswers.push(input.value)
+                        }
+                    })
+                    this.answers = incorrectAnswers
+                },
+                selectCorrect(event) {
+                    const number = event.target.dataset.number
+                    const correct = document.getElementById(`incorrect_answer_${number}`).value
+                    this.answer = correct
+                },
+                async submit() {
+                    this.populateAnswers()
+                    if (!this.validate()) return
+                    let url = '<%= create_trivia_questions_path %>'
+                    let data = {
+                        question: {
+                            content: this.question,
+                            answers: this.answers,
+                            correct_answer: this.answer,
+                            difficulty: this.difficulty.toLowerCase(),
+                            question_type: this.type
+                        }
+                    }
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    console.log(response.body)
+
+
+                    if (response.ok) {
+                        this.errorMessage = ''
+                        this.question = ''
+                        this.answers = []
+                        this.answer = ''
+                        this.question_type = 'TriviaQuestion'
+                        this.difficulty = 'Easy'
+                        const result = await swal.fire({
+                            title: 'Question Created',
+                            text: 'The question has been created successfully',
+                            icon: 'success',
+                            confirmButtonText: 'Close'
+                        })
+                        if (result.isConfirmed) {
+                            window.location = '<%= trivia_questions_path %>'
+                        } else {
+                            alert('There was an error creating the question')
+                        }
+                    } else {
+                        const data = await response.json()
+                        this.errorMessage = data.errors
+                    }
+                    // console.log(this.question, this.answer)
+                },
+                validate() {
+                    if (this.answers.length < 4) {
+                        this.errorMessage = 'Please fill in all the answers'
+                        return false
+                    } else if (!this.answer) {
+                        this.errorMessage = 'Please select the correct answer'
+                        return false
+                    } else if (!this.question) {
+                        this.errorMessage = 'Please fill in the question'
+                        return false
+                    }
+                    return true
+                },
+                deleteQuestion(event) {
+                    event.preventDefault()
+                    swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You will not be able to recover this question',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'No, keep it'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const deleteUrl = "#{delete_url}"
+                            const url = deleteUrl
+                            fetch(url, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                }
+                            }).then(() => {
+                                window.location = '<%= trivia_questions_path %>'
+                            }).catch((error) => {
+                                console.log(error)
+                            });
+                        }
+                    })
+                }
+            })
+        )
+    });
+</script>
