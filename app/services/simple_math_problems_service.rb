@@ -9,6 +9,7 @@ class SimpleMathProblemsService
   def save_questions(questions)
     questions.each do |question|
       Question.find_or_create_by!(
+        difficulty: 'easy',
         game_id: Game.simple_math.id,
         content: question[:question],
         correct_answer: question[:correct],

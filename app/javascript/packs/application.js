@@ -16,6 +16,7 @@ import Alpine from 'alpinejs'
 import './main.js.erb'
 
 
+
 // import tailwind into javascript
 import "../stylesheets/application.scss"
 
