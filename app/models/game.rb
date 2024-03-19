@@ -2,7 +2,7 @@ class Game < ApplicationRecord
   has_many :rounds
 
   all.each do |game|
-    define_singleton_method(game.name.downcase.gsub(' ', '_')) do
+    define_singleton_method("#{game.name.downcase.gsub(' ', '_')}") do
       find_by(name: game.name)
     end
   end
