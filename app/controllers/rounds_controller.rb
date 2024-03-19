@@ -18,7 +18,7 @@ class RoundsController < ApplicationController
       last_question = round.questions.last
     else
       Round.create(game_id: Game.simple_math.id, user_id: current_user.id)
-      @questions = SimpleMathQuestion.new.generate(type: 'multiplication')
+      @questions = MultiplicationQuestion.new.generate
     end
 
     render 'simple_math', layout: 'simple_math'

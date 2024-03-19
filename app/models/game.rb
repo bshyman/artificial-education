@@ -1,5 +1,11 @@
 class Game < ApplicationRecord
   has_many :rounds
+
+  all.each do |game|
+    define_singleton_method("#{game.name.downcase.gsub(' ', '_')}") do
+      find_by(name: game.name)
+    end
+  end
   
   def self.pokemon_spellcheck
     @pokemon_spellcheck = Game.find_by(name: 'Pokemon Spellcheck')

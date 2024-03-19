@@ -8,9 +8,18 @@ class Question < ApplicationRecord
     when 'addition'
       addition_question
     when 'multiplication'
-      @multiplication_questions = SimpleMathProblemsService.new.new_multiplication_questions
     else
       raise "Can't generate question without type!"
+    end
+  end
+
+  def save_questions(questions, game_id)
+    questions.each do |question|
+      Question.find_or_create_by!(
+        game_id: game_id,
+        content: question[:question],
+        correct_answer: question[:correct],
+        incorrect_answers: question[:incorrect_answers])
     end
   end
 
@@ -18,9 +27,10 @@ class Question < ApplicationRecord
     chars   = pokemon.name.chars
     correct = chars.sample
     answers = [correct]
-    while answers.size < 9 do
+    while answers.size < 9
       incorrect_answer = ('a'..'z').without(correct).sample
       next if answers.include?(incorrect_answer)
+      
       answers << incorrect_answer
     end
     answers.shuffle!
@@ -38,7 +48,6 @@ class Question < ApplicationRecord
   def answered?
     submitted_answer.present?
   end
-
 
   def random_pokemon
     pokemon = nil
@@ -64,4 +73,6 @@ class Question < ApplicationRecord
     end
     { question: "#{var1} + #{var2}", answers: answers, answer: correct, }
   end
+
+
 end

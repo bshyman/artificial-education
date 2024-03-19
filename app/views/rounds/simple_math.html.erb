@@ -1,9 +1,30 @@
 <%#= render partial: 'flashcard' %>
-<div x-data="simpleMath()"  class="overflow-hidden" style="height: 900px;padding-top: 150px;">
+<div x-data="simpleMath()" class="overflow-hidden" style="height: 900px;padding-top: 150px;">
   <div class="h-full" id='chalkboard'>
-    <div id="simple-math-question-wrapper">
+    <div class="text-center">
+      <div class="flex justify-between">
+        <h1>Question <span x-text="currentQuestionNumber"></span> of 10</h1>
+        <h1>Score: <span x-text="score"></span></h1>
+      </div>
+      <br>
+      <span x-text="currentQuestion.question" style="font-size: 5rem;">
+  </span>
+      <br><br>
+      <h4>Choose the correct answer</h4>
+      <div id='answers-wrapper' class="my-4 w-2/3 mx-auto flex justify-evenly prevent-select">
+        <template x-for="answer in currentQuestion.incorrect_answers" :key="answer">
+          <button x-text="answer" @click.once="submitAnswer($event)" :value="currentQuestion.answer" class="border border-white rounded-sm px-6 py-4 hover:opacity-50 animate__animated hover:-translate-y-1 transform transition prevent-select"></button>
+        </template>
+      </div>
     </div>
 
+    <style>
+        .prevent-select {
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Standard syntax */
+        }
+    </style>
     <br/>
   </div>
   <div id="final" class="w-full h-full flex justify-center items-center" style="font-size: 5rem;">
@@ -18,83 +39,97 @@
   />
 <script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
 <script type="text/javascript" charset="utf-8">
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('simpleMath', () => ({
-      currentQuestionNumber: 1,
-      answer: null,
-      score: 0,
-      validateChar(event) {
-        let newVal = event.target.value
-        console.log({newVal});
-        if (isNaN(newVal)) {
-          const regex = /\d+/;
-          const validVal = event.target.value.match(regex)
-          this.answer = validVal
-          event.target.innerText = validVal
-        }
-      },
-      init(){
-        this.fetchNextSimpleMathQuestion()
-      },
-      async fetchNextSimpleMathQuestion() {
-        const response = await fetch('<%= new_simple_math_questions_path %>')
-        if (response.ok) {
-          document.getElementById("simple-math-question-wrapper").innerHTML = await response.text()
-        }
-      },
-      isCurrentQuestion(element) {
-        const questionNumber = parseInt(element.dataset.index)
-        return this.currentQuestionNumber === questionNumber
-      },
-      submitAnswer(event, questionJson) {
-        const question = JSON.parse(questionJson)
-          const buttons = document.getElementById('answers-wrapper')
-          buttons.querySelectorAll('button').forEach(button => {
-              button.style.pointerEvents = 'none'
-          })
-        let timeout = 500
-        if (question.correct_answer.toString() === event.currentTarget.value) {
-          party.sparkles(event.currentTarget);
-          this.score++
-        } else {
-          event.currentTarget.classList.add('animate__headShake')
-          timeout = 2500
-          const answersWrapper = document.getElementById('answers-wrapper')
-          answersWrapper.querySelector(`[data-answer="${question.correct_answer}"]`).style.borderColor = 'yellow'
-          answersWrapper.querySelector(`[data-answer="${question.correct_answer}"]`).style.borderWidth = '2px'
-        }
-        setTimeout(() => {
-          this.answer = ''
-          if (this.currentQuestionNumber < 3) {
-            this.currentQuestionNumber++
-            this.fetchNextSimpleMathQuestion()
-          } else {
-            updateXp(this.score)
-            this.showFinal()
-          }
-        }, timeout)
-      },
-      showFinal() {
-        swal.fire({
-          title: `Game Over! <br> ${this.score} out of 10`,
-          text: "Play again? ",
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, play again!',
-          reverseButtons: true,
-          cancelButtonText: 'No thanks!',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location = '<%= game_new_simple_math_round_path %>'
-          } else {
-            window.location = '<%= games_path %>'
-          }
-        })
+    const questions = <%= @questions.to_json.html_safe %>
+        console.log({questions});
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('simpleMath', () => ({
+            currentQuestionNumber: 1,
+            answer: null,
+            score: 0,
+            currentQuestion: {
+                question: '',
+                correct_answer: '',
+                incorrect_answers: []
+            },
+            answers() {
+                let allAnswers = this.currentQuestion.incorrect_answers.push(this.currentQuestion.correct_answer)
+                return shuffle(allAnswers)
+            },
+            validateChar(event) {
+                let newVal = event.target.value
+                console.log({newVal});
+                if (isNaN(newVal)) {
+                    const regex = /\d+/;
+                    const validVal = event.target.value.match(regex)
+                    this.answer = validVal
+                    event.target.innerText = validVal
+                }
+            },
+            init() {
+                // this.fetchNextSimpleMathQuestion()
+                this.currentQuestion = questions[0]
+            },
+            async fetchNextSimpleMathQuestion() {
+                const response = await fetch('<%= new_simple_math_questions_path %>')
+                if (response.ok) {
+                    // document.getElementById("simple-math-question-wrapper").innerHTML = await response.text()
+                    this.currentQuestionNumber++
+                }
+            },
+            isCurrentQuestion(element) {
+                const questionNumber = parseInt(element.dataset.index)
+                return this.currentQuestionNumber === questionNumber
+            },
+            submitAnswer(event, questionJson) {
+                // const question = JSON.parse(questionJson)
+                const buttons = document.getElementById('answers-wrapper')
+                buttons.querySelectorAll('button').forEach(button => {
+                    button.style.pointerEvents = 'none'
+                })
+                let timeout = 500
+debugger
+                if (this.currentQuestion.correct_answer.toString() === event.currentTarget.value) {
+                    party.sparkles(event.currentTarget);
+                    this.score++
+                } else {
+                    event.currentTarget.classList.add('animate__headShake')
+                    timeout = 2500
+                    const answersWrapper = document.getElementById('answers-wrapper')
+                    answersWrapper.querySelector(`[data-answer="${this.currentQuestion.correct_answer}"]`).style.borderColor = 'yellow'
+                    answersWrapper.querySelector(`[data-answer="${this.currentQuestion.correct_answer}"]`).style.borderWidth = '2px'
+                }
+                setTimeout(() => {
+                    this.answer = ''
+                    if (this.currentQuestionNumber < 3) {
+                        this.currentQuestionNumber++
+                        this.fetchNextSimpleMathQuestion()
+                    } else {
+                        updateXp(this.score)
+                        this.showFinal()
+                    }
+                }, timeout)
+            },
+            showFinal() {
+                swal.fire({
+                    title: `Game Over! <br> ${this.score} out of 10`,
+                    text: "Play again? ",
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, play again!',
+                    reverseButtons: true,
+                    cancelButtonText: 'No thanks!',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location = '<%= game_new_simple_math_round_path %>'
+                    } else {
+                        window.location = '<%= games_path %>'
+                    }
+                })
 
-      }
-    }))
-  })
+            }
+        }))
+    })
 
 </script>
 
