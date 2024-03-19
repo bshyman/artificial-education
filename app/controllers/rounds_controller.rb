@@ -23,4 +23,15 @@ class RoundsController < ApplicationController
 
     render 'simple_math', layout: 'simple_math'
   end
+  def collections_new
+    if session.dig(:games, :collections)
+      round = Round.where(game_id: Game.collections.id, user_id: current_user.id)
+      last_question = round.questions.last
+    else
+      Round.create(game_id: Game.collections.id, user_id: current_user.id)
+      @collections = CollectionsService.new.generate
+    end
+
+    render 'collections_new'
+  end
 end
