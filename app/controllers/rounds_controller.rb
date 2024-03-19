@@ -23,6 +23,7 @@ class RoundsController < ApplicationController
 
     render 'simple_math', layout: 'simple_math'
   end
+
   def collections_new
     if session.dig(:games, :collections)
       round = Round.where(game_id: Game.collections.id, user_id: current_user.id)
@@ -33,5 +34,16 @@ class RoundsController < ApplicationController
     end
 
     render 'collections_new'
+  end
+
+  def trivia
+    if session.dig(:games, :trivia)
+      round = Round.where(game_id: Game.trivia.id, user_id: current_user.id)
+      last_question = round.questions.last
+    else
+      Round.create(game_id: Game.trivia.id, user_id: current_user.id)
+      @questions = TriviaQuestionService.new.random_questions
+      raise 'Not enough questions' if @questions.size < 10
+    end
   end
 end

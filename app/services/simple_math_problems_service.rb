@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class SimpleMathProblemsService
-
   def multiplication_questions(count: 10)
     count.times.map do
       int1 = rand(1..10)

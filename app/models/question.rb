@@ -1,5 +1,13 @@
+# frozen_string_literal: true
+
 class Question < ApplicationRecord
-  QUESTION_TYPES = %w[missing_letter addition]
+  self.inheritance_column = :question_type
+
+  VALID_DIFFICULTIES = %w[easy medium hard].freeze
+  validates :incorrect_answers, presence: true, length: { minimum: 3, maximum: 3, message: 'must be unique' }
+  validates :correct_answer, presence: true
+  validates :difficulty, presence: true, inclusion: { in: VALID_DIFFICULTIES }
+  validates :content, presence: true, uniqueness: true
 
   def generate(args = {})
     case args[:type]

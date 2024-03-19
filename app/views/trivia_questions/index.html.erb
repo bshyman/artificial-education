@@ -1,0 +1,24 @@
+<div class="mx-12 my-4 border-b border-gray-300 text-center text-gray-600 font-bold text-lg">
+  <div class="flex items-center justify-end gap-3">
+    <%= link_to 'Add Question', new_question_path, class: 'btn btn-neutral' %>
+  </div>
+  <% @questions.each do |question| %>
+    <%= link_to edit_trivia_question_path(question) do %>
+      <div class="mx-8 my-4 sm:border-t">
+        <div class=" flex justify-center items-center flex-col gap-4 pb-12 sm:space-y-0 sm:pb-2">
+          <!-- Question -->
+          <div class="flex flex-col sm:max-w-md my-4 text-center justify-center items-center gap-2">
+            <span class="flex select-none items-center pl-3 text-gray-500 sm:text-xl"><%== question.content %></span>
+            <span class="text-sm text-gray-500 font-light">Difficulty: <span class="font-medium"><%= question.difficulty&.capitalize %></span></span>
+          </div>
+
+          <div class="flex items-center gap-6">
+            <% question.answers.each do |answer| %>
+              <div class="text-sm <%= answer == question.correct_answer ? 'border-green-500 text-green-500' : 'border-gray-500 text-gray-500' %> border px-3 py-2 rounded-lg"><%= answer %></div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>

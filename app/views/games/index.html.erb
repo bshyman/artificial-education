@@ -19,6 +19,7 @@
   <%= render partial: 'game_tile', locals: { subject: 'spelling', image_path: 'pokemon_poster.jpg', name: 'Pokemon Spellcheck', path: pokemon_index_path } %>
   <%= render partial: 'game_tile', locals: { subject: 'math', image_path: 'math_blackboard.jpg', name: "Multiplication", path: game_new_simple_math_round_path(game_id: Game.simple_math.id, operator: 'multiplication') } %>
   <%= render partial: 'game_tile', locals: { subject: 'logic', image_path: 'collections.png', name: "Collections", path: game_new_collections_round_path(Game.collections.id) } %>
+  <%= render partial: 'game_tile', locals: { subject: 'general knowledge', image_path: 'trivia.png', name: "Trivia", path: game_trivia_path(game_id: Game.trivia.id) } %>
 </div>
 
 <script>

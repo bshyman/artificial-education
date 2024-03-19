@@ -67,7 +67,6 @@ GEM
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
       rouge (>= 1.0.0)
-    bindex (0.8.1)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
     bootsnap (1.18.3)
@@ -87,7 +86,20 @@ GEM
     crass (1.0.6)
     date (3.3.4)
     debug_inspector (1.2.0)
+    dockerfile-rails (1.6.5)
+      rails (>= 3.0.0)
+    dotenv (2.7.6)
+    dotenv-rails (2.7.6)
+      dotenv (= 2.7.6)
+      railties (>= 3.2)
     erubi (1.12.0)
+    event_stream_parser (1.0.0)
+    faraday (2.9.0)
+      faraday-net_http (>= 2.0, < 3.2)
+    faraday-multipart (1.0.4)
+      multipart-post (~> 2)
+    faraday-net_http (3.1.0)
+      net-http
     ffi (1.16.3)
     globalid (1.2.1)
       activesupport (>= 6.1)
@@ -122,6 +134,9 @@ GEM
     minitest (5.22.2)
     msgpack (1.7.2)
     multi_xml (0.6.0)
+    multipart-post (2.4.0)
+    net-http (0.4.1)
+      uri
     net-imap (0.4.10)
       date
       net-protocol
@@ -208,6 +223,10 @@ GEM
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
       rubocop-ast (>= 1.30.0, < 2.0)
+    ruby-openai (6.3.1)
+      event_stream_parser (>= 0.3.0, < 2.0.0)
+      faraday (>= 1)
+      faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
     rubyzip (2.3.2)
     sass-rails (6.0.0)
@@ -242,11 +261,7 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.5.0)
-    web-console (4.2.1)
-      actionview (>= 6.0.0)
-      activemodel (>= 6.0.0)
-      bindex (>= 0.4.0)
-      railties (>= 6.0.0)
+    uri (0.13.0)
     webdrivers (5.3.1)
       nokogiri (~> 1.6)
       rubyzip (>= 1.3.0)
@@ -274,6 +289,8 @@ DEPENDENCIES
   bootsnap (>= 1.4.4)
   byebug
   capybara (>= 3.26)
+  dockerfile-rails (>= 1.6)
+  dotenv-rails
   httparty
   inline_svg
   jbuilder (~> 2.7)
@@ -286,12 +303,12 @@ DEPENDENCIES
   rollbar
   rubocop
   rubocop-rails
+  ruby-openai
   sass-rails (>= 6)
   selenium-webdriver
   spring
   turbolinks (~> 5)
   tzinfo-data
-  web-console (>= 4.1.0)
   webdrivers
   webpacker (~> 5.0)
 
@@ -299,4 +316,4 @@ RUBY VERSION
    ruby 3.0.6p216
 
 BUNDLED WITH
-   2.4.22
+   2.5.6

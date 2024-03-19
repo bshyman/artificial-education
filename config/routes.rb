@@ -12,10 +12,22 @@ Rails.application.routes.draw do
     get 'new_pokemon_round', to: 'rounds#pokemon_new'
     get 'new_simple_math_round', to: 'rounds#simple_math_new'
     get 'new_collections_round', to: 'rounds#collections_new'
+    get 'trivia', to: 'rounds#trivia'
     resources :rounds, only: [] do
       get 'new_question', to: 'questions#new', on: :collection, as: 'new_question'
     end
   end
+
+  resources :questions, except: [:create] do
+    member do
+      get 'edit_trivia', to: 'trivia_questions#edit', as: 'edit_trivia'
+      delete 'trivia', to: 'trivia_questions#destroy'
+    end
+    post 'trivia_questions', to: 'trivia_questions#create', as: 'create_trivia', on: :collection
+    get 'trivia', to: 'trivia_questions#index', as: 'trivia', on: :collection
+  end
+  # get 'new_trivia_question', to: 'questions#new_trivia_question', as: 'new_trivia_question'
+  # post
 
   resources :questions, only: [] do
     get 'new_simple_math', on: :collection
