@@ -9,7 +9,8 @@ class SimpleMathProblemsService
       {
         question: "What is #{int1} x #{int2}?",
         correct_answer: correct.to_s,
-        incorrect_answers: generate_incorrect_answers(correct)
+        incorrect_answers: generate_incorrect_answers(correct),
+        all_answers: [correct.to_s, generate_incorrect_answers(correct)].flatten.shuffle
       }
     end
   end

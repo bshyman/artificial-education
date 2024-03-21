@@ -7,13 +7,13 @@
         <h1>Score: <span x-text="score"></span></h1>
       </div>
       <br>
-      <span x-text="currentQuestion.question" style="font-size: 5rem;">
+      <span x-text="currentQuestion.question" style="font-size: 4rem;">
   </span>
       <br><br>
       <h4>Choose the correct answer</h4>
       <div id='answers-wrapper' class="my-4 w-2/3 mx-auto flex justify-evenly prevent-select">
-        <template x-for="answer in currentQuestion.incorrect_answers" :key="answer">
-          <button x-text="answer" @click.once="submitAnswer($event)" :value="currentQuestion.answer" class="border border-white rounded-sm px-6 py-4 hover:opacity-50 animate__animated hover:-translate-y-1 transform transition prevent-select"></button>
+        <template x-for="answer in currentQuestion.allAnswers" :key="answer">
+          <button x-text="answer" @click.once="submitAnswer($event)" :dataAnswer="answer" :value="answer" class="border border-white rounded-sm px-6 py-4 hover:opacity-50 animate__animated hover:-translate-y-1 transform transition prevent-select"></button>
         </template>
       </div>
     </div>
@@ -43,17 +43,14 @@
         console.log({questions});
     document.addEventListener('alpine:init', () => {
         Alpine.data('simpleMath', () => ({
-            currentQuestionNumber: 1,
+            currentQuestionNumber: 0,
             answer: null,
             score: 0,
             currentQuestion: {
                 question: '',
                 correct_answer: '',
-                incorrect_answers: []
-            },
-            answers() {
-                let allAnswers = this.currentQuestion.incorrect_answers.push(this.currentQuestion.correct_answer)
-                return shuffle(allAnswers)
+                incorrect_answers: [],
+                all_answers: []
             },
             validateChar(event) {
                 let newVal = event.target.value
@@ -66,15 +63,12 @@
                 }
             },
             init() {
-                // this.fetchNextSimpleMathQuestion()
-                this.currentQuestion = questions[0]
+                this.fetchNextSimpleMathQuestion()
             },
             async fetchNextSimpleMathQuestion() {
-                const response = await fetch('<%= new_simple_math_questions_path %>')
-                if (response.ok) {
-                    // document.getElementById("simple-math-question-wrapper").innerHTML = await response.text()
-                    this.currentQuestionNumber++
-                }
+                this.currentQuestionNumber++
+                this.currentQuestion = questions[this.currentQuestionNumber - 1]
+                this.currentQuestion.allAnswers = this.currentQuestion.incorrect_answers.concat(this.currentQuestion.correct_answer)
             },
             isCurrentQuestion(element) {
                 const questionNumber = parseInt(element.dataset.index)
@@ -84,10 +78,11 @@
                 // const question = JSON.parse(questionJson)
                 const buttons = document.getElementById('answers-wrapper')
                 buttons.querySelectorAll('button').forEach(button => {
+                    debugger
                     button.style.pointerEvents = 'none'
                 })
                 let timeout = 500
-debugger
+                debugger
                 if (this.currentQuestion.correct_answer.toString() === event.currentTarget.value) {
                     party.sparkles(event.currentTarget);
                     this.score++
@@ -95,13 +90,12 @@ debugger
                     event.currentTarget.classList.add('animate__headShake')
                     timeout = 2500
                     const answersWrapper = document.getElementById('answers-wrapper')
-                    answersWrapper.querySelector(`[data-answer="${this.currentQuestion.correct_answer}"]`).style.borderColor = 'yellow'
-                    answersWrapper.querySelector(`[data-answer="${this.currentQuestion.correct_answer}"]`).style.borderWidth = '2px'
+                    answersWrapper.querySelector(`[dataanswer="${this.currentQuestion.correct_answer}"]`).style.borderColor = 'yellow'
+                    answersWrapper.querySelector(`[dataanswer="${this.currentQuestion.correct_answer}"]`).style.borderWidth = '2px'
                 }
                 setTimeout(() => {
                     this.answer = ''
-                    if (this.currentQuestionNumber < 3) {
-                        this.currentQuestionNumber++
+                    if (this.currentQuestionNumber < 10) {
                         this.fetchNextSimpleMathQuestion()
                     } else {
                         updateXp(this.score)
