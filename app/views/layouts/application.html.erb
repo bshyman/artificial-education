@@ -15,6 +15,8 @@
 <body>
 <%= render partial: 'layouts/navbar' unless content_for :skip_navbar %>
 
+<div>  <%= render partial: 'layouts/flash' %>
+</div>
 <div x-data x-cloak class="min-h-screen">
   <%= yield %>
 </div>

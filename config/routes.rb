@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   resources :players
-  resources :users do
+  resources :users, except: :show do
     patch 'update_xp', to: 'users#update_xp', on: :member
   end
   post 'change_player', to: 'application#change_player'
@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       delete 'trivia', to: 'trivia_questions#destroy'
     end
     post 'trivia_questions', to: 'trivia_questions#create', as: 'create_trivia', on: :collection
-    get 'trivia', to: 'trivia_questions#index', as: 'trivia', on: :collection
+    get 'trivia', to: 'questions#trivia_questions', as: 'trivia', on: :collection
   end
   # get 'new_trivia_question', to: 'questions#new_trivia_question', as: 'new_trivia_question'
   # post

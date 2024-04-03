@@ -169,8 +169,24 @@
             </div>
           </div>
           <div class="w-full flex items-center justify-end relative cursor-pointer" onclick="dropdownHandler(this)">
-            <ul class="p-2 w-40 border-r bg-white absolute rounded left-0 shadow mt-16 top-0 hidden">
-              <% @players.reject{|player| player == current_player}.each do |player| %>
+            <ul  class="p-2 w-40 border-r bg-white absolute rounded left-0 shadow mt-16 top-0 hidden">
+              <!--              Add user-->
+              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
+                <%= link_to new_user_path do %>
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z"/>
+                      <line x1="12" y1="5" x2="12" y2="19"/>
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    <span class="ml-2">Add User</span>
+                  </div>
+                <% end %>
+              </li>
+
+              <%= tag.hr class: 'border border-gray-200 my-3' %>
+
+              <% @players.reject { |player| player == current_player }.each do |player| %>
                 <li @click="changeCurrentPlayer(<%= player.id %>)" class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
                   <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -266,24 +282,24 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('navbarItems', () => ({
-      async changeCurrentPlayer(player_id) {
-          const response = await fetch('<%= change_player_path %>', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ player_id: player_id })
-          })
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('navbarItems', () => ({
+            async changeCurrentPlayer(player_id) {
+                const response = await fetch('<%= change_player_path %>', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({player_id: player_id})
+                })
 
-          const data = await response.json()
-          console.log({ data })
-          if (data.success) {
-            window.location.reload()
-          }
-      }
-    }))
-  })
+                const data = await response.json()
+                console.log({data})
+                if (data.success) {
+                    window.location.reload()
+                }
+            }
+        }))
+    })
 </script>

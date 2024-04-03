@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  validates :first_name, presence: true
+  validate :birthday_is_valid_format
   def level
     xp / 100 + 1
   end
@@ -18,5 +20,11 @@ class User < ApplicationRecord
     age = today.year - birthday.year
     age -= 1 if today < birthday + age.years
     age
+  end
+
+  def birthday_is_valid_format
+    return unless birthday.present?
+
+    errors.add(:birthday, 'is not a valid date') unless birthday.is_a?(Date)
   end
 end

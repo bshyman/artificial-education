@@ -1,8 +1,9 @@
 class ApplicationController < ActionController::Base
   helper_method :current_user, :current_player
   before_action :load_players
+  # before_action :authorize_player
 
-  # before_action :authorize_player, except: :landing
+  before_action :authorize_player, except: :landing
 
   def current_user
     @current_user ||= User.first
