@@ -26,4 +26,8 @@ class ApplicationController < ActionController::Base
     session[:user_id] = @current_player.id
     render json: { player: @current_player, success: true }, status: :ok
   end
+
+  def current_group
+    @current_group ||= Group.first
+  end
 end

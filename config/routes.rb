@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :groups
   resources :players
   resources :users, except: :show do
     patch 'update_xp', to: 'users#update_xp', on: :member
