@@ -28,6 +28,8 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
+    @user.group_id = current_user.group_id
+    @user.role = 'player'
     if user_params[:birthday].present?
       @user.birthday = Date.strptime(user_params[:birthday], '%m/%d/%Y')
     end
@@ -53,6 +55,10 @@ class UsersController < ApplicationController
 
   def destroy
     @user = User.find(params[:id])
+    if @user.last_group_member?
+      redirect_to users_path, notice: 'User is the last member of a group and cannot be deleted.'
+      return
+    end
     @user.destroy
 
     redirect_to users_path, notice: 'User was successfully deleted.'

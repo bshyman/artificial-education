@@ -4,10 +4,18 @@
 
 @layer components {
   .btn {
-    @apply rounded-md border px-3.5 py-2.5 text-sm font-semibold shadow-sm transform transition duration-300 ease-in-out disabled:pointer-events-none disabled:opacity-50 select-none;
+    @apply rounded-md border px-3.5 py-2.5 text-sm font-semibold shadow-sm transform transition duration-300 ease-in-out whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 select-none;
+
+    &.success {
+      @apply text-gray-700 bg-gradient-to-r from-green-200 to-yellow-200 hover:opacity-60 hover:border-gray-700;
+    }
 
     &.primary {
-      @apply border-blue-600 text-white bg-blue-600 hover:bg-blue-400 hover:border-white;
+      @apply border-blue-600 text-blue-600 bg-white hover:bg-blue-600 hover:text-white hover:border-white;
+    }
+
+    &.info {
+      @apply border-blue-300 text-blue-400 bg-white hover:bg-blue-400 hover:bg-opacity-90 hover:text-white hover:border-white;
     }
 
     &.flat {

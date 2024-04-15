@@ -117,6 +117,10 @@
           <%= link_to 'Students', users_path %>
         </li>
 
+        <li class="cursor-pointer h-full flex items-center <%= request.path == store_path ? 'border-yellow-400 text-yellow-400 border-b-2' : 'text-gray-800' %> text-sm mr-10 tracking-normal">
+          <%= link_to 'Store', store_path %>
+        </li>
+
         <li class="h-full flex items-center ml-auto">
           <%= render partial: 'layouts/score_progress_bar' %>
         </li>
@@ -169,7 +173,7 @@
             </div>
           </div>
           <div class="w-full flex items-center justify-end relative cursor-pointer" onclick="dropdownHandler(this)">
-            <ul  class="p-2 w-40 border-r bg-white absolute rounded left-0 shadow mt-16 top-0 hidden">
+            <ul class="p-2 w-40 border-r bg-white absolute rounded left-0 shadow mt-16 top-0 hidden">
               <!--              Add user-->
               <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
                 <%= link_to new_user_path do %>
@@ -282,6 +286,12 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
+    // Avatar Dropdown
+    function dropdownHandler(element) {
+        let single = element.getElementsByTagName("ul")[0];
+        single.classList.toggle("hidden");
+    }
+
     document.addEventListener('alpine:init', () => {
         Alpine.data('navbarItems', () => ({
             async changeCurrentPlayer(player_id) {

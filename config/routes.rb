@@ -1,14 +1,22 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
+  resources :user_prizes, only: [:index, :create]
+  resources :prizes
   resources :groups
   resources :players
   resources :users, except: :show do
     patch 'update_xp', to: 'users#update_xp', on: :member
   end
+
   post 'change_player', to: 'application#change_player'
   resources :pokemon, except: :destroy do
     get 'new_question' => 'pokemon#new_question', on: :collection
     get 'pokedex', on: :collection
   end
+
+  get 'store', to: 'home#store'
+
   resources :games, only: [:index] do
     get 'new_pokemon_round', to: 'rounds#pokemon_new'
     get 'new_simple_math_round', to: 'rounds#simple_math_new'
