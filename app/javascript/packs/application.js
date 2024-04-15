@@ -31,3 +31,5 @@ import './main.js'
 window.Alpine = Alpine
 window.Alpine.start()
 
+import 'boxicons'
+
