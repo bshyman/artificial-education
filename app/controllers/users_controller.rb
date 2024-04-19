@@ -10,9 +10,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
 
-    if user_params[:birthday].present?
-      @user.birthday = Date.strptime(user_params[:birthday], '%m/%d/%Y')
-    end
+    @user.birthday = Date.strptime(user_params[:birthday], '%m/%d/%Y') if user_params[:birthday].present?
 
     if @user.update(user_params)
       redirect_to users_path, notice: 'User was successfully updated.'
@@ -30,9 +28,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     @user.group_id = current_user.group_id
     @user.role = 'player'
-    if user_params[:birthday].present?
-      @user.birthday = Date.strptime(user_params[:birthday], '%m/%d/%Y')
-    end
+    @user.birthday = Date.strptime(user_params[:birthday], '%m/%d/%Y') if user_params[:birthday].present?
 
     if @user.save
       redirect_to users_path, notice: 'User was successfully created.'
@@ -62,6 +58,17 @@ class UsersController < ApplicationController
     @user.destroy
 
     redirect_to users_path, notice: 'User was successfully deleted.'
+  end
+
+  def authenticate
+    @user = User.find_by(id: params[:id])
+
+    if @user&.authenticate(params[:password])
+      session[:user_id] = @user.id
+      render json: { success: true }, status: :ok
+    else
+      render json: { success: false, errors: 'Incorrect password' }, status: :unauthorized
+    end
   end
 
   private

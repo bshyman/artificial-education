@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   before_action :authorize_player, except: :landing
 
   def current_user
-    @current_user ||= User.first
+    @current_user ||= User.find(session[:user_id])
   end
 
   def current_player
@@ -21,8 +21,9 @@ class ApplicationController < ActionController::Base
     @players = User.all.order(birthday: :asc)
   end
 
-  def change_player
-    @current_player = User.find(params[:player_id])
+  def switch_user
+    user = User.find_by(id: params.dig(:user, :id))
+    @current_player = user
     session[:user_id] = @current_player.id
     render json: { player: @current_player, success: true }, status: :ok
   end

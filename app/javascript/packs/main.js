@@ -59,4 +59,8 @@ window.flashSuccess = (message, type) => {
 document.addEventListener('alpine:init', () => {
 
 })
+window.postHeaders = {
+    'Content-Type': 'application/json',
+    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+}
 

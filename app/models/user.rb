@@ -1,22 +1,19 @@
+# frozen_string_literal: true
+
+# user model
 class User < ApplicationRecord
+  has_secure_password
   validates :first_name, presence: true
   validate :birthday_is_valid_format
-  validate :xp_is_not_negative
+  validate :bank_is_not_negative
 
-  def xp_is_not_negative
-    return unless xp&.negative?
-
-    errors.add(:base, 'XP cannot be negative')
+  def bank_is_not_negative
+    errors.add(:base, 'bank cannot be negative') if bank.negative?
   end
-
-  # validates_numericality_of :xp,
-  #                           only_integer: true,
-  #                           greater_than_or_equal_to: 0,
-  #                           message: 'Not enough XP to make this purchase!'
 
   belongs_to :group
 
-  enum role: %i[admin player]
+  enum role: { admin: 'admin', user: 'user' }
 
   def level
     xp / 100 + 1

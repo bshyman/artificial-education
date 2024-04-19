@@ -13,7 +13,7 @@ class UserPrizesController < ApplicationController
     end
 
     if @user_prize.save
-      render json: {}, status: :ok
+      render json: { user: { bank: @user_prize.user_bank } }, status: :ok
     else
       render 'new'
     end
@@ -26,7 +26,7 @@ class UserPrizesController < ApplicationController
   def deduct_points
     user = User.find(current_user.id)
     prize = Prize.find(user_prize_params[:prize_id])
-    user.update!(xp: user.xp - prize.cost)
+    user.update!(bank: user.bank - prize.cost)
   end
 
   private

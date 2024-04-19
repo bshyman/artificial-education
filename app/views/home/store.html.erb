@@ -3,7 +3,7 @@
     class="lg:max-w-[1440px] md:max-w-[744px] max-w-[375px] mx-auto bg-white lg:px-10 md:px-6 px-4 md:py-12  py-9">
     <div class="flex justify-between items-center">
 
-    <p class="text-4xl font-semibold  text-gray-800  text-left">Prizes</p>
+      <p class="text-4xl font-semibold  text-gray-800  text-left">Prizes</p>
       <%= link_to 'Add Prize', new_prize_path, class: 'btn primary' %>
     </div>
     <p class="text-base  text-gray-600 mt-2 text-left">Home / </p>
@@ -49,13 +49,15 @@
                     if (result.isConfirmed) {
                         fetch('<%= user_prizes_path %>', {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-                            },
+                            headers: postHeaders,
                             body: JSON.stringify({user_prize: {prize_id: item.id}})
                         }).then((response) => {
                             if (response.ok) {
+                                response.json().then(data => {
+                                    this.$dispatch('updateBank', {
+                                        bank: data.user.bank
+                                    })
+                                });
                                 flashSuccess('Item purchased successfully', 'success')
                             } else {
                                 response.json().then((error) => {
@@ -68,7 +70,8 @@
                         })
                     }
                 })
-            }
+            },
+
         }))
     })
 </script>

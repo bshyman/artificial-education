@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_04_04_011039) do
+ActiveRecord::Schema.define(version: 2024_04_18_014742) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -91,6 +91,8 @@ ActiveRecord::Schema.define(version: 2024_04_04_011039) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "role"
     t.integer "group_id"
+    t.integer "bank", default: 0
+    t.string "password_digest"
   end
 
   add_foreign_key "user_prizes", "prizes"

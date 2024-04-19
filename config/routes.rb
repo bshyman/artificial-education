@@ -7,9 +7,10 @@ Rails.application.routes.draw do
   resources :players
   resources :users, except: :show do
     patch 'update_xp', to: 'users#update_xp', on: :member
+    post 'authenticate', to: 'users#authenticate', on: :member
   end
 
-  post 'change_player', to: 'application#change_player'
+  post 'switch_user', to: 'application#switch_user'
   resources :pokemon, except: :destroy do
     get 'new_question' => 'pokemon#new_question', on: :collection
     get 'pokedex', on: :collection
