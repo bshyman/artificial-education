@@ -1,0 +1,9 @@
+<div id="flash" class="flex justify-center">
+  <div class="fixed z-50 flex flex-col mt-6 w-fit">
+    <% flash.each do |type, message| %>
+      <div
+        x-init="flashSuccess('<%= message %>', '<%= type %>')"
+      ></div>
+    <% end %>
+  </div>
+</div>

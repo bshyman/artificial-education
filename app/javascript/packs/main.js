@@ -31,3 +31,36 @@ window.shuffle = array => {
     }
     return array;
 }
+
+// window.flashSuccess = message => {
+//     swal.fire({
+//         icon: 'success',
+//         title: 'Success',
+//         text: message
+//     })
+// }
+window.flashSuccess = (message, type) => {
+    const Toast = swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = swal.stopTimer;
+            toast.onmouseleave = swal.resumeTimer;
+        }
+    });
+    Toast.fire({
+        icon: type,
+        title: message
+    })
+}
+document.addEventListener('alpine:init', () => {
+
+})
+window.postHeaders = {
+    'Content-Type': 'application/json',
+    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+}
+

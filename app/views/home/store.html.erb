@@ -1,0 +1,77 @@
+<div x-data="store" class="px-4 py-2">
+  <div
+    class="lg:max-w-[1440px] md:max-w-[744px] max-w-[375px] mx-auto bg-white lg:px-10 md:px-6 px-4 md:py-12  py-9">
+    <div class="flex justify-between items-center">
+
+      <p class="text-4xl font-semibold  text-gray-800  text-left">Prizes</p>
+      <%= link_to 'Add Prize', new_prize_path, class: 'btn primary' %>
+    </div>
+    <p class="text-base  text-gray-600 mt-2 text-left">Home / </p>
+
+    <div class="lg:block md:hidden block">
+      <div class="lg:flex justify-center gap-8 mt-6">
+        <% @prizes.each do |prize| %>
+          <div class="relative">
+            <div>
+              <img src="<%= image_path('prizes/video_game_time.png') %>" class="w-full h-60 object-cover" alt="">
+            </div>
+            <div
+              class="flex justify-between items-center bg-gradient-to-r from-red-200  to-yellow-400 py-4 px-3  ">
+              <div>
+                <p class="text-base font-normal  "><%= prize.name %></p>
+                <p class="text-base font-normal  font-medium"><%= prize.cost %> XP</p>
+              </div>
+              <div @click="firePurchaseModal" data-item="<%= prize.to_json %>">
+                <box-icon name="cart-add" type="solid" size="sm" class="mr-1 hover:opacity-50 cursor-pointer"></box-icon>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script type="text/javascript" charset="utf-8">
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('store', () => ({
+            firePurchaseModal(e) {
+                const item = JSON.parse(e.currentTarget.dataset.item)
+                swal.fire({
+                    title: 'Are you sure?',
+                    text: `Purchase ${item.name} for ${item.cost} XP`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    cancelButtonText: 'No'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('<%= user_prizes_path %>', {
+                            method: 'POST',
+                            headers: postHeaders,
+                            body: JSON.stringify({user_prize: {prize_id: item.id}})
+                        }).then((response) => {
+                            if (response.ok) {
+                                response.json().then(data => {
+                                    this.$dispatch('updateBank', {
+                                        bank: data.user.bank
+                                    })
+                                });
+                                flashSuccess('Item purchased successfully', 'success')
+                            } else {
+                                response.json().then((error) => {
+                                    swal.fire('Error', error.error, 'error')
+                                })
+                            }
+                        }).catch((error) => {
+                            console.error(error)
+                            swal.fire('Error', 'An error occurred while purchasing the item', 'error')
+                        })
+                    }
+                })
+            },
+
+        }))
+    })
+</script>

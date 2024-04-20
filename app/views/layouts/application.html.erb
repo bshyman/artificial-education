@@ -9,14 +9,18 @@
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
   <%= stylesheet_pack_tag 'application', media: 'all' %>
   <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload', defer: true %>
+
   <%= yield :head %>
 </head>
 
 <body>
 <%= render partial: 'layouts/navbar' unless content_for :skip_navbar %>
 
+<div>  <%= render partial: 'layouts/flash' %>
+</div>
 <div x-data x-cloak class="min-h-screen">
   <%= yield %>
 </div>
+<!--  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>-->
 </body>
 </html>

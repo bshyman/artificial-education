@@ -13,7 +13,6 @@ require("channels")
 
 // import 'alpine-turbo-drive-adapter'
 import Alpine from 'alpinejs'
-import './main.js.erb'
 
 
 
@@ -24,9 +23,13 @@ import "../stylesheets/application.scss"
 // Turbolinks.start()
 // ActiveStorage.start()
 
+
 import Swal from 'sweetalert2'
 window.swal = Swal
+import './main.js'
 
 window.Alpine = Alpine
 window.Alpine.start()
+
+import 'boxicons'
 

@@ -1,9 +1,10 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-    purge: [],
+    content: ['./app/views/**/*.html.erb'],
     presets: [],
-    darkMode: false, // or 'media' or 'class'
+    media: false,
+    mode: 'jit',
     theme: {
         screens: {
             sm: '640px', md: '768px', lg: '1024px', xl: '1280px', '2xl': '1536px',

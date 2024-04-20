@@ -2,8 +2,8 @@
 <div x-data x-cloak class="w-full mx-auto bg-white shadow-sm border-b border-gray-300 px-5 sm:px-10">
   <div class="justify-between h-16 flex items-center lg:items-stretch mx-auto">
     <div class="h-full flex items-center flex-1">
-      <div class="mr-10 flex items-center">
-        <svg width="146px" height="36px" viewBox="0 0 384 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+      <div class=" flex items-center">
+        <svg width="186px" height="36px" viewBox="0 0 384 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
           <title>63EC04EA-F9B5-4F76-AA27-C6D0890287B3</title>
           <g
             id="Page-1"
@@ -97,7 +97,7 @@
                     font-weight="bold"
                     fill="#F6AD55"
                   >
-                    <tspan x="132" y="58">COURSERY</tspan>
+                    <tspan x="132" y="58">Goldstar Academy</tspan>
                   </text>
                 </g>
               </g>
@@ -107,9 +107,6 @@
         <!-- <h3 class="text-base text-gray-800 font-bold tracking-normal leading-tight ml-3 hidden lg:block">The North</h3> -->
       </div>
       <ul class="lg:flex items-center h-full hidden lg:flex-1">
-        <li class="cursor-pointer h-full flex items-center <%= request.path == root_path ? 'border-yellow-400 text-yellow-400 border-b-2' : 'text-gray-800' %> text-sm tracking-normal">
-          <%= link_to 'Dashboard', root_path %>
-        </li>
         <li class="cursor-pointer h-full flex items-center <%= request.path == games_path ? 'border-yellow-400 text-yellow-400 border-b-2' : 'text-gray-800' %> text-sm mx-10 tracking-normal ">
           <%= link_to 'Games', games_path %>
         </li>
@@ -117,13 +114,23 @@
           <%= link_to 'Students', users_path %>
         </li>
 
+        <li class="cursor-pointer h-full flex items-center <%= request.path == store_path ? 'border-yellow-400 text-yellow-400 border-b-2' : 'text-gray-800' %> text-sm mr-10 tracking-normal">
+          <%= link_to 'Store', store_path %>
+        </li>
+
         <li class="h-full flex items-center ml-auto">
           <%= render partial: 'layouts/score_progress_bar' %>
         </li>
-        <li class="h-full flex items-center mr-4">
-          <div class="flex flex-col items-center">
+        <li class="h-full flex justify-center items-center border-l border-gray-300">
+          <div class="flex flex-col items-center mx-4">
             <span class="text-xs text-gray-400">LEVEL</span>
             <span class="text-sm font-bold text-gray-400"><%= current_user.level %></span>
+          </div>
+        </li>
+        <li class="h-full flex justify-center items-center border-l border-gray-300">
+          <div class="flex flex-col items-center justify-center text-center">
+            <span class="text-xs text-green-500 w-16">XP</span>
+            <span @update-bank.camel.window="$store.navbarItems.updateBankWidget($event.detail.bank)" id='bank' class=" text-sm font-bold text-green-500 w-16">$0</span>
           </div>
         </li>
       </ul>
@@ -155,7 +162,7 @@
   />
 </div>
 </div> -->
-        <div x-data="navbarItems" class="w-full h-full flex">
+        <div class="w-full h-full flex">
           <div class="w-24 h-full flex items-center justify-center border-l border-r">
             <div class="relative">
               <svg xmlns="http://www.w3.org/2000/svg" class="cursor-pointer text-gray-600 icon icon-tabler icon-tabler-bell" width="28" height="28" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -170,8 +177,24 @@
           </div>
           <div class="w-full flex items-center justify-end relative cursor-pointer" onclick="dropdownHandler(this)">
             <ul class="p-2 w-40 border-r bg-white absolute rounded left-0 shadow mt-16 top-0 hidden">
-              <% @players.reject{|player| player == current_player}.each do |player| %>
-                <li @click="changeCurrentPlayer(<%= player.id %>)" class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
+              <!--              Add user-->
+              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
+                <%= link_to new_user_path do %>
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z"/>
+                      <line x1="12" y1="5" x2="12" y2="19"/>
+                      <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    <span class="ml-2">Add User</span>
+                  </div>
+                <% end %>
+              </li>
+
+              <%= tag.hr class: 'border border-gray-200 my-3' %>
+
+              <% @players.reject { |player| player == current_player }.each do |player| %>
+                <li @click="$store.navbarItems.changeCurrentUser(<%= player.to_json %>)" class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
                   <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                       <path stroke="none" d="M0 0h24v24H0z"/>
@@ -266,24 +289,105 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('navbarItems', () => ({
-      async changeCurrentPlayer(player_id) {
-          const response = await fetch('<%= change_player_path %>', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ player_id: player_id })
-          })
+    // Avatar Dropdown
+    function dropdownHandler(element) {
+        let single = element.getElementsByTagName("ul")[0];
+        single.classList.toggle("hidden");
+    }
 
-          const data = await response.json()
-          console.log({ data })
-          if (data.success) {
-            window.location.reload()
-          }
-      }
-    }))
-  })
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('navbarItems', {
+            bank: <%= current_user.bank %>,
+            init() {
+                this.easeCounter(this.bank);
+            },
+            async changeCurrentUser(user) {
+                // use swal and prompt for password
+                await swal.fire({
+                    title: `Log in as ${user.first_name}`,
+                    input: 'password',
+                    inputLabel: 'Enter your password',
+                    inputPlaceholder: 'Enter your password',
+                    inputAttributes: {
+                        autocapitalize: 'off',
+                        autocorrect: 'off',
+                        autocomplete: 'off',
+                        required: 'required'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Log in',
+                    inputValidator(inputValue) {
+                        if (!inputValue) {
+                            return 'Password is required'
+                        }
+                    },
+                    preConfirm: async (password) => {
+                        if (password) {
+                            const response = await fetch(`/users/${user.id}/authenticate`,
+                                {
+                                    method: 'POST',
+                                    headers: postHeaders,
+                                    body: JSON.stringify({id: 'user.id', password: password})
+                                }
+                            );
+                            const data = await response.json();
+                            if (data.success) {
+
+                            } else {
+                                swal.showValidationMessage(data.errors);
+                                return false
+                            }
+                        } else {
+                            return false;
+                        }
+                    }
+                })
+                const response = await fetch('<%= switch_user_path %>', {
+                    method: 'POST',
+                    headers: postHeaders,
+                    body: JSON.stringify({user})
+                })
+
+                const data = await response.json()
+                if (data.success) {
+                    window.location.reload()
+                } else {
+                    console.error('Failed to change player')
+                    console.log(data.errors)
+                }
+            },
+            easeCounter(counterLimit) {
+                const counterHTML = document.getElementById('bank');
+                let vpCounter = {
+                    init: function (elem) {
+                        this.counterLimit = counterLimit;
+                        this.elem = elem;
+                        this.currentValue = 0;
+                        this.timer = setInterval(() => {
+                            if (this.atLimit()) {
+                                clearInterval(this.timer);
+                            } else {
+                                this.count();
+                            }
+                        }, 100);
+                    },
+                    atLimit: function () {
+                        return this.currentValue == Alpine.store('navbarItems').bank;
+                    },
+                    count: function () {
+                        this.currentValue += Math.abs(this.stepAmount())
+                        this.elem.innerHTML = `$${Math.ceil(this.currentValue)}`;
+                    },
+                    stepAmount: function () {
+                        return (this.counterLimit - this.currentValue) * 0.12;
+                    }
+                }
+                vpCounter.init(counterHTML);
+            },
+            updateBankWidget(amount) {
+                this.bank = amount;
+                this.easeCounter(amount);
+            }
+        })
+    });
 </script>
