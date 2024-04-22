@@ -1,0 +1,33 @@
+# fly.toml app configuration file generated for artificial-education-dark-bird-3539 on 2024-04-19T20:04:39-05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'artificial-education'
+primary_region = 'ord'
+console_command = '/rails/bin/rails console'
+
+[build]
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[[services]]
+  internal_port = 5432 # Postgres instance
+  protocol = "tcp"
+
+[[services.ports]]
+  handlers = ["pg_tls"]
+  port = 5432
+
