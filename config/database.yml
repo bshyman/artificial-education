@@ -80,13 +80,14 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 
+
 production:
   adapter: postgresql
   encoding: unicode
-  pool: 5
+#  pool: 5artificial-education-quiet-dream--db.dev
   timeout: 5000
   database: artificial-education-db
-  username: artificial_education
+  username: postgres
   password: <%= ENV['DATABASE_PASSWORD'] %>
-  host: artificial-education-db.fly.dev
+  host: artificial-education-db.internal
   port: 5432
