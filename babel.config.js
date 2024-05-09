@@ -45,12 +45,10 @@ module.exports = function (api) {
             isTestEnv && 'babel-plugin-dynamic-import-node',
             '@babel/plugin-transform-destructuring',
             "@babel/plugin-proposal-optional-chaining",
-            [
-                '@babel/plugin-proposal-class-properties',
-                {
-                    loose: true
-                }
-            ],
+            "@babel/plugin-proposal-nullish-coalescing-operator",
+            ["@babel/plugin-transform-class-properties", { "loose": true }],
+            ["@babel/plugin-transform-private-methods", { "loose": true }],
+            ["@babel/plugin-transform-private-property-in-object", { "loose": true }],
             [
                 '@babel/plugin-proposal-object-rest-spread',
                 {
