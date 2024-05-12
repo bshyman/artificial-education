@@ -6,6 +6,7 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validate :birthday_is_valid_format
   validate :bank_is_not_negative
+  validates :email, presence: true, if: :admin?
 
   def bank_is_not_negative
     errors.add(:base, 'bank cannot be negative') if bank.negative?

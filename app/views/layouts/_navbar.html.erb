@@ -208,6 +208,15 @@
                   <%= tag.hr class: 'border border-gray-200 my-3' %>
                 <% end %>
               <% end %>
+
+              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
+                <%= link_to logout_path do %>
+                  <div class="flex items-center">
+                    <box-icon name='exit'></box-icon>
+                    <span class="ml-2">Logout</span>
+                  </div>
+                <% end %>
+              </li>
             </ul>
             <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
               <path stroke="none" d="M0 0h24v24H0z"/>

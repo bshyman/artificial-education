@@ -1,11 +1,22 @@
-<%= content_for :skip_navbar %>
-<div x-data="landingPage" class="bg-black inset-0 absolute">
-  <%= button_to 'Login', '/auth/auth0', method: :post, id: 'login-button', class: 'invisible' %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Artificial Education</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
+
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= stylesheet_pack_tag 'application', media: 'all' %>
+  <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload', defer: true %>
+
+  <%= yield :head %>
+</head>
+
+<body>
+<div x-data x-cloak class="min-h-screen">
+  <%= yield %>
 </div>
-<script type="text/javascript" charset="utf-8">
-  document.addEventListener('alpine:init', () => {
-    Alpine.data('landingPage', () => {
-      document.getElementById('login-button').click()
-    })
-  })
-</script>
+<!--  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>-->
+</body>
+</html>
