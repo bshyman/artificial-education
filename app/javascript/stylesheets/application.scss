@@ -4,7 +4,31 @@
 
 @layer components {
   .btn {
-    @apply rounded-md border px-3.5 py-2.5 text-sm font-semibold shadow-sm transform transition duration-300 ease-in-out whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 select-none;
+    @apply rounded-md border px-3.5 py-2.5 text-sm font-semibold shadow-sm transform transition duration-300 ease-in-out whitespace-nowrap disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer;
+
+    &.lg {
+      @apply px-6 py-4 text-base;
+    }
+
+    &.sm {
+      @apply px-2.5 py-1.5 text-xs;
+    }
+
+    &.xs {
+      @apply px-2 py-1 text-xs;
+    }
+
+    &.block {
+      @apply w-full;
+    }
+
+    &.rounded {
+      @apply rounded-full;
+    }
+
+    &.wide {
+      @apply w-48;
+    }
 
     &.success {
       @apply text-gray-700 bg-gradient-to-r from-green-200 to-yellow-200 hover:opacity-60 hover:border-gray-700;
