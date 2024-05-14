@@ -9,6 +9,7 @@
 Game.find_or_create_by(name: 'Pokemon Spellcheck')
 Game.find_or_create_by(name: 'Simple Math')
 Game.find_or_create_by(name: 'Trivia')
+Game.find_or_create_by(name: 'Collections')
 
 TriviaQuestion.find_or_create_by(difficulty: 'easy', content: 'What is the capital of France?', correct_answer: 'Paris', incorrect_answers: ['London', 'Berlin', 'Madrid'])
 TriviaQuestion.find_or_create_by(difficulty: 'easy', content: 'What is the capital of Germany?', correct_answer: 'Berlin', incorrect_answers: ['London', 'Paris', 'Madrid'])
