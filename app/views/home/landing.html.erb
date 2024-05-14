@@ -1,0 +1,15 @@
+
+<!-- Place a login button anywhere on your application -->
+<div class="w-screen h-screen flex justify-center items-end relative">
+  <div class="absolute bottom-10 w-72">
+    <%= button_to 'Login', '/auth/auth0', method: :post, data: { turbo: false }, class: 'btn primary block' %>
+  </div>
+</div>
+
+<style>
+  body {
+      background-image: url('assets/goldstar_landing.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+  }
+</style>
