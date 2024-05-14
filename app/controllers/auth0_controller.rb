@@ -2,9 +2,7 @@ class Auth0Controller < ApplicationController
   skip_before_action :authorize_player
 
   def callback
-    p 'callback'
     # This stores all the user information that came from Auth
-    p request.env['omniauth.auth']
     user_info = request.env['omniauth.auth']['info']
     email = user_info['email']
     user = User.find_or_initialize_by(email:)
@@ -19,7 +17,6 @@ class Auth0Controller < ApplicationController
 
     user.save!
     session[:user_id] = user.id
-    byebug
     redirect_to root_path, notice: 'Signed in successfully'
   end
 
