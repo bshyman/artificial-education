@@ -79,10 +79,15 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
-production:
-  <<: *default
-  url: <%= ENV['DATABASE_URL'] %>
-  database: artificial_education_production
-  username: artificial_education
-  password: <%= ENV['ARTIFICIAL_EDUCATION_DATABASE_PASSWORD'] %>
 
+
+production:
+  adapter: postgresql
+  encoding: unicode
+#  pool: 5artificial-education-quiet-dream--db.dev
+  timeout: 5000
+  database: artificial-education-db
+  username: postgres
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  host: artificial-education-db.internal
+  port: 5432

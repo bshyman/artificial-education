@@ -15,6 +15,10 @@ class Game < ApplicationRecord
     @simple_math = Game.find_by(name: 'Simple Math')
   end
 
+  def self.collections
+    @collections = Game.find_by(name: 'Collections')
+  end
+
   def initialize_score_map
     { potential_value: 100, earned_value: 0 }
   end
