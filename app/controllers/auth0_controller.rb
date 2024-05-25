@@ -8,7 +8,7 @@ class Auth0Controller < ApplicationController
     user = User.find_or_initialize_by(email:)
 
     user.first_name = user_info['name'].split.first if user.first_name.blank?
-    user.last_name = user_info['name'].split[1..] if user.last_name.blank?
+    user.last_name = user_info['name'].split[1..].join(' ') if user.last_name.blank?
     user.password = SecureRandom.hex(10) if user.password_digest.blank?
     if user.new_record?
       group = Group.create(name: 'My first group')

@@ -178,18 +178,20 @@
           <div class="w-full flex items-center justify-end relative cursor-pointer" onclick="dropdownHandler(this)">
             <ul class="p-2 w-40 border-r bg-white absolute rounded left-0 shadow mt-16 top-0 hidden">
               <!--              Add user-->
-              <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
-                <%= link_to new_user_path do %>
-                  <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z"/>
-                      <line x1="12" y1="5" x2="12" y2="19"/>
-                      <line x1="5" y1="12" x2="19" y2="12"/>
-                    </svg>
-                    <span class="ml-2">Add User</span>
-                  </div>
-                <% end %>
-              </li>
+              <% if current_user.admin? %>
+                <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
+                  <%= link_to new_user_path do %>
+                    <div class="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-plus" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z"/>
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                      </svg>
+                      <span class="ml-2">Add User</span>
+                    </div>
+                  <% end %>
+                </li>
+              <% end %>
 
               <%= tag.hr class: 'border border-gray-200 my-3' %>
 
@@ -312,7 +314,7 @@
             },
             async changeCurrentUser(user) {
                 // use swal and prompt for password
-                await swal.fire({
+                const returnValue = await swal.fire({
                     title: `Log in as ${user.first_name}`,
                     input: 'password',
                     inputLabel: 'Enter your password',
@@ -341,7 +343,7 @@
                             );
                             const data = await response.json();
                             if (data.success) {
-
+                                return data;
                             } else {
                                 swal.showValidationMessage(data.errors);
                                 return false
@@ -351,18 +353,24 @@
                         }
                     }
                 })
-                const response = await fetch('<%= switch_user_path %>', {
-                    method: 'POST',
-                    headers: postHeaders,
-                    body: JSON.stringify({user})
-                })
 
-                const data = await response.json()
-                if (data.success) {
-                    window.location.reload()
-                } else {
-                    console.error('Failed to change player')
-                    console.log(data.errors)
+                if (returnValue.isConfirmed) {
+                    const response = await fetch('<%= switch_user_path %>', {
+                        method: 'POST',
+                        headers: postHeaders,
+                        body: JSON.stringify({user})
+                    })
+
+                    const data = await response.json()
+                    if (data.success) {
+                        window.location.reload()
+                    } else {
+                        await swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
+                        })
+                    }
                 }
             },
             easeCounter(counterLimit) {

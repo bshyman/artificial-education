@@ -14,7 +14,7 @@ class User < ApplicationRecord
 
   belongs_to :group
 
-  enum role: { admin: 'admin', user: 'user' }
+  enum role: { admin: 'admin', basic: 'basic' }
 
   def level
     xp / 100 + 1
