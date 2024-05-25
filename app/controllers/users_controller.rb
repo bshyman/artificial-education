@@ -23,11 +23,10 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
-
   def create
     @user = User.new(user_params)
     @user.group_id = current_user.group_id
-    @user.role = 'player'
+    @user.role = 'basic'
     @user.birthday = Date.strptime(user_params[:birthday], '%m/%d/%Y') if user_params[:birthday].present?
 
     if @user.save
@@ -62,6 +61,7 @@ class UsersController < ApplicationController
 
   def authenticate
     @user = User.find_by(id: params[:id])
+    return render json: { success: true }, status: :ok if @user.password_digest.blank?
 
     if @user&.authenticate(params[:password])
       session[:user_id] = @user.id
@@ -74,6 +74,6 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :birthday, :xp)
+    params.require(:user).permit(:first_name, :last_name, :password, :password_confirmation, :birthday, :xp)
   end
 end

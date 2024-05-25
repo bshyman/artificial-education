@@ -11,7 +11,13 @@
       </div>
     </div>
 
-    <div class="md:flex items-center mt-6">
+    <div class="md:flex items-center justify-between mt-6">
+
+      <div class="md:w-64 md:mt-0 mt-4">
+        <label class="text-sm leading-none text-gray-800" id="email">Email</label>
+        <%= f.email_field :email, class: "w-full p-3 mt-3 bg-gray-100 border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800", ariaLabelledby: "email", placeholder: "john@example.com", tabIndex: 4 %>
+      </div>
+
       <div class="md:w-64">
         <label class="text-sm leading-none text-gray-800" id="birthday">Birthday</label>
 
@@ -38,6 +44,24 @@
           <%= f.date_field :birthday, 'x-ref': 'picker', class: "w-full p-3 mt-3 bg-gray-100 border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800", ariaLabelledby: "birthday", placeholder: "08/18/2018", tabIndex: 2 %>
 
         </div>
+      </div>
+    </div>
+
+    <div class="md:flex items-center mt-6">
+      <div class="md:w-64">
+        <label class="text-sm leading-none text-gray-800" id="firstName">Password</label>
+        <%= f.password_field :password, class: "w-full p-3 mt-3 bg-gray-100 border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800", ariaLabelledby: "firstName", placeholder: "Enter password", tabIndex: 2 %>
+      </div>
+      <div class="md:w-64 md:ml-12 md:mt-0 mt-4">
+        <label class="text-sm leading-none text-gray-800" id="lastName">Password Confirmation</label>
+        <%= f.password_field :password_confirmation, class: "w-full p-3 mt-3 bg-gray-100 border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800", ariaLabelledby: "lastName", placeholder: "Enter password", tabIndex: 3 %>
+      </div>
+    </div>
+
+    <div class="md:flex items-center mt-6">
+      <div class="md:w-64">
+        <label class="text-sm leading-none text-gray-800" id="role">Role</label>
+        <%= f.select :role, User.roles.keys.map{|role| [role.capitalize, role]}, { include_blank: 'Select Role' }, class: "w-full p-3 mt-3 bg-gray-100 border rounded border-gray-200 focus:outline-none focus:border-gray-600 text-sm font-medium leading-none text-gray-800", ariaLabelledby: "role", tabIndex: 5 %>
       </div>
     </div>
 
