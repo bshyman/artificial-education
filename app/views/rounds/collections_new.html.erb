@@ -64,87 +64,97 @@
 <script type="text/javascript" charset="utf-8">
     document.addEventListener('alpine:init', () => {
         Alpine.data('collections', () => ({
-            wordsData: <%= @collections.html_safe %>,
-            selections: [],
-            connections: [],
-            completeGroups: [],
-            mistakesRemaining: 3,
-            viewingResults: false,
-            makeSelection(e) {
-                if (this.selections.includes(e.target.innerText)) {
-                    this.selections = this.selections.filter((word) => word !== e.target.innerText)
-                } else {
-                    if (this.selections.length === 4) return
-                    this.selections.push(e.target.innerText)
-                }
-            },
-            handleSubmittedAnswer() {
-                if (this.selections.length === 4) {
-                    let correct = this.checkAnswers()
-                    if (correct) {
-                        this.connections.push(this.selections)
-                        this.selections = []
-                        if (this.completeGroups.length === 4) this.gameOver()
+                wordsData: <%= @collections.html_safe %>,
+                selections: [],
+                connections: [],
+                completeGroups: [],
+                mistakesRemaining: 3,
+                viewingResults: false,
+                makeSelection(e) {
+                    if (this.selections.includes(e.target.innerText)) {
+                        this.selections = this.selections.filter((word) => word !== e.target.innerText)
                     } else {
-                        if (this.mistakesRemaining > 0) {
-                            this.mistakesRemaining--
+                        if (this.selections.length === 4) return
+                        this.selections.push(e.target.innerText)
+                    }
+                },
+                handleSubmittedAnswer() {
+                    if (this.selections.length === 4) {
+                        let correct = this.checkAnswers()
+                        if (correct) {
+                            this.connections.push(this.selections)
+                            this.selections = []
+                            if (this.completeGroups.length === 4) this.gameOver()
                         } else {
-                            this.gameOver()
+                            if (this.mistakesRemaining > 0) {
+                                this.mistakesRemaining--
+                            } else {
+                                this.gameOver()
+                            }
                         }
                     }
-                }
-            },
-            checkAnswers() {
-                let correct = this.wordsData.groupings.find((grouping) => {
-                    return grouping.words.every((word) => this.selections.includes(word))
-                })
-                if (correct) {
-                    document.querySelectorAll('[data-word]').forEach((word) => {
-                        if (this.selections.includes(word.dataset.word)) {
-                            word.remove()
-                        } else if (this.selections.includes(word.dataset.word)) {
-                            return word.classList.add('bg-red-600')
-                        }
+                },
+                checkAnswers() {
+                    let correct = this.wordsData.groupings.find((grouping) => {
+                        return grouping.words.every((word) => this.selections.includes(word))
                     })
-                    this.completeGroups.push(correct.difficulty)
-                } else {
-                    console.log('incorrect')
-                    return false
+                    if (correct) {
+                        document.querySelectorAll('[data-word]').forEach((word) => {
+                            if (this.selections.includes(word.dataset.word)) {
+                                word.remove()
+                            } else if (this.selections.includes(word.dataset.word)) {
+                                return word.classList.add('bg-red-600')
+                            }
+                        })
+                        this.completeGroups.push(correct.difficulty)
+                    } else {
+                        console.log('incorrect')
+                        return false
+                    }
+                    return correct;
+                },
+                deselectAll(e) {
+                    this.selections = []
+                    document.querySelectorAll('[data-word]').forEach((word) => {
+                        word.classList.remove('bg-red-300')
+                        word.classList.add('bg-gray-300')
+                    })
+                },
+                textContentForGroup(group) {
+                    let groupData = this.findGroupForDifficulty(group)
+                    return groupData.commonality.toUpperCase()
+                },
+                wordsForGroup(group) {
+                    let groupData = this.findGroupForDifficulty(group)
+                    return groupData.words.join(', ')
+                },
+                isGroupComplete(group) {
+                    return this.completeGroups.includes(group.toString())
+                },
+                findGroupForDifficulty(difficulty) {
+                    return this.wordsData.groupings.find((grouping) => grouping.difficulty == difficulty)
+                },
+                gameOver() {
+                    document.querySelectorAll('.post-game-button').forEach((button) => {
+                        button.style.display = 'inline-block'
+                    })
+                    const mistakesPointsMap = {
+                        0: 3,
+                        1: 6,
+                        2: 9,
+                        3: 10
+                    }
+                    const xp = mistakesPointsMap[this.mistakesRemaining]
+                    updateXp(xp, '<%= current_user.id %>')
+                },
+                isGameOver() {
+                    return this.completeGroups.length === 4 || this.mistakesRemaining === 0
                 }
-                return correct;
-            },
-            deselectAll(e) {
-                this.selections = []
-                document.querySelectorAll('[data-word]').forEach((word) => {
-                    word.classList.remove('bg-red-300')
-                    word.classList.add('bg-gray-300')
-                })
-            },
-            textContentForGroup(group) {
-                let groupData = this.findGroupForDifficulty(group)
-                return groupData.commonality.toUpperCase()
-            },
-            wordsForGroup(group) {
-                let groupData = this.findGroupForDifficulty(group)
-                return groupData.words.join(', ')
-            },
-            isGroupComplete(group) {
-                return this.completeGroups.includes(group.toString())
-            },
-            findGroupForDifficulty(difficulty) {
-                return this.wordsData.groupings.find((grouping) => grouping.difficulty == difficulty)
-            },
-            gameOver() {
-                document.querySelectorAll('.post-game-button').forEach((button) => {
-                    button.style.display = 'inline-block'
-                })
-            },
-            isGameOver() {
-                return this.completeGroups.length === 4 || this.mistakesRemaining === 0
-            },
-            toggleViewResults(){
-                this.viewingResults = !this.viewingResults
-            }
-        }))
+                ,
+                toggleViewResults() {
+                    this.viewingResults = !this.viewingResults
+                }
+            })
+        )
     })
 </script>
