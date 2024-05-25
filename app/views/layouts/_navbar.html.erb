@@ -178,7 +178,7 @@
           <div class="w-full flex items-center justify-end relative cursor-pointer" onclick="dropdownHandler(this)">
             <ul class="p-2 w-40 border-r bg-white absolute rounded left-0 shadow mt-16 top-0 hidden">
               <!--              Add user-->
-              <% if current_user.admin? %>
+              <% if current_user.adult? %>
                 <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
                   <%= link_to new_user_path do %>
                     <div class="flex items-center">
@@ -198,17 +198,11 @@
               <% @players.reject { |player| player == current_player }.each do |player| %>
                 <li @click="$store.navbarItems.changeCurrentUser(<%= player.to_json %>)" class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">
                   <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z"/>
-                      <circle cx="12" cy="7" r="4"/>
-                      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/>
-                    </svg>
+                    <box-icon name='<%= player.icon_for_role %>'></box-icon>
                     <span class="ml-2"><%= player.first_name %></span>
                   </div>
                 </li>
-                <% unless player == @players.last %>
-                  <%= tag.hr class: 'border border-gray-200 my-3' %>
-                <% end %>
+                <%= tag.hr class: 'border border-gray-200 my-3' %>
               <% end %>
 
               <li class="cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 hover:opacity-40 focus:text-indigo-700 focus:outline-none">

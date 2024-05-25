@@ -13,7 +13,7 @@
       </h4>
     </div>
     <div class="mt-6 md:mt-0">
-      <%= link_to 'Add A Student', new_user_path, class: 'btn secondary' %>
+      <%= link_to 'Add A Student', new_user_path, class: 'btn secondary' if current_user.adult? %>
     </div>
   </div>
 </div>
@@ -45,8 +45,11 @@
           <p class="text-gray-800 text-sm">XP</p>
         </div>
       </div>
+      <% can_edit = current_user.id == player.id || current_user.adult? %>
       <div class="flex items-center justify-between mb-8 gap-3">
-        <%= link_to 'Edit Profile', edit_user_path(player.id), class: 'btn info' %>
+        <div class="<%= 'opacity-0 pointer-events-none' unless can_edit %>">
+          <%= link_to 'Edit Profile', edit_user_path(player.id), class: 'btn info' %>
+        </div>
         <%= link_to 'Purchase History', user_prizes_path(user_id: player.id), class: 'btn primary' %>
       </div>
     </div>
