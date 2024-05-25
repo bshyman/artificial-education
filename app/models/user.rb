@@ -6,7 +6,7 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validate :birthday_is_valid_format
   validate :bank_is_not_negative
-  validates :email, presence: true, if: :admin?
+  validates :email, presence: true, if: :adult?
 
   def bank_is_not_negative
     errors.add(:base, 'bank cannot be negative') if bank.negative?
@@ -14,7 +14,7 @@ class User < ApplicationRecord
 
   belongs_to :group
 
-  enum role: { admin: 'admin', basic: 'basic' }
+  enum role: { adult: 'adult', child: 'child' }
 
   def level
     xp / 100 + 1
@@ -39,6 +39,10 @@ class User < ApplicationRecord
 
   def last_group_member?
     group.users.count == 1
+  end
+
+  def icon_for_role
+    adult? ? 'user' : 'child'
   end
 
   private
