@@ -4,7 +4,7 @@
     <div class="flex justify-between items-center">
 
       <p class="text-4xl font-semibold  text-gray-800  text-left">Prizes</p>
-      <%= link_to 'Add Prize', new_prize_path, class: 'btn primary' %>
+      <%= link_to 'Add Prize', new_prize_path, class: 'btn primary' if current_user.adult? %>
     </div>
     <p class="text-base  text-gray-600 mt-2 text-left">Home / </p>
 

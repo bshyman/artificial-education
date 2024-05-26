@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
   end
 
   def load_players
-    @players = User.all.order(birthday: :asc)
+    @players = current_group.users.order(birthday: :asc)
   end
 
   def switch_user
