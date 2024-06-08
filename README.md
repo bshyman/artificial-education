@@ -1,6 +1,6 @@
-# trap-starter
+# Educational games for children
 
-Starter template with some favorites pre-installed
+### Stack
 - Tailwind 2.0
 - Rails 6.1
 - Alpine 3
