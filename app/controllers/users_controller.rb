@@ -46,6 +46,7 @@ class UsersController < ApplicationController
   def update_xp
     bank = current_user.bank + user_params[:xp].to_i
     current_player.update(xp: current_player.xp + user_params[:xp].to_i, bank:)
+    current_player.update!(xp: current_player.xp + user_params[:xp].to_i)
     render json: { xp: current_player.xp, level: current_player.level, level_progress: current_player.level_progress }, status: :ok
   end
 

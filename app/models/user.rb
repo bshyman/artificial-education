@@ -14,7 +14,11 @@ class User < ApplicationRecord
 
   belongs_to :group
 
-  enum role: { adult: 'adult', child: 'child' }
+  enum role: { adult: 'adult', child: 'child', super: 'super' }
+
+  def adult?
+    role == 'adult' || role == 'super'
+  end
 
   def level
     xp / 100 + 1

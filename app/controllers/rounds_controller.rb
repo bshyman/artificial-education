@@ -46,4 +46,9 @@ class RoundsController < ApplicationController
       raise 'Not enough questions' if @questions.size < 10
     end
   end
+
+  def state_selector
+    @states_and_capitals = Rails.application.config_for(:states, env: 'production').to_json
+    render 'games/state_selector'
+  end
 end

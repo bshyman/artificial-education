@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   resources :groups
   resources :players
   resources :users, except: :show do
-    patch 'update_xp', to: 'users#update_xp', on: :member
+    patch 'update_xp', to: 'users#update_xp', on: :collection
     post 'authenticate', to: 'users#authenticate', on: :member
   end
 
@@ -18,11 +18,12 @@ Rails.application.routes.draw do
 
   get 'store', to: 'home#store'
 
-  resources :games, only: [:index] do
+  resources :games do
     get 'new_pokemon_round', to: 'rounds#pokemon_new'
     get 'new_simple_math_round', to: 'rounds#simple_math_new'
     get 'new_collections_round', to: 'rounds#collections_new'
     get 'trivia', to: 'rounds#trivia'
+    get 'state_selector', to: 'rounds#state_selector'
     resources :rounds, only: [] do
       get 'new_question', to: 'questions#new', on: :collection, as: 'new_question'
     end
@@ -42,6 +43,8 @@ Rails.application.routes.draw do
   resources :questions, only: [] do
     get 'new_simple_math', on: :collection
   end
+
+  get 'state_selector', to: 'rounds#state_selector'
 
   root to: 'games#index'
   get 'landing' => 'home#landing'

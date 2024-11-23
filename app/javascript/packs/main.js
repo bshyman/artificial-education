@@ -1,7 +1,6 @@
-window.updateXp = async (xp, userId) => {
-    console.log('Updating XP to', xp)
-    const url = `/users/${userId}/update_xp`
-    console.log({url})
+window.updateXp = async (xp) => {
+    console.info('Updating XP to', xp)
+    const url = `/users/update_xp`
     const response = await fetch(url, {
         method: 'PATCH',
         headers: {
@@ -64,3 +63,18 @@ window.postHeaders = {
     'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 }
 
+
+window.gameOverModal = async (correctlyAnswered, callback) => {
+    await swal.fire({
+        title: `Game Over! <br> ${correctlyAnswered} out of 10`,
+        text: "Play again? ",
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, play again!',
+        reverseButtons: true,
+        cancelButtonText: 'No thanks!',
+        allowOutsideClick: false,
+        stopKeydownPropagation: false,
+    }).then(result => callback(result))
+}
