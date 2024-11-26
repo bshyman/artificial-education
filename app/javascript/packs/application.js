@@ -27,6 +27,7 @@ import "../stylesheets/application.scss"
 import Swal from 'sweetalert2'
 window.swal = Swal
 import './main.js'
+import './globe_game.js'
 
 window.Alpine = Alpine
 window.Alpine.start()

@@ -13,6 +13,7 @@
     "alpinejs": "^3.2.2",
     "autoprefixer": "^10.3.1",
     "boxicons": "^2.1.4",
+    "datamaps": "^0.5.9",
     "just-percentile": "^3.0.1",
     "postcss": "^8.3.6",
     "sweetalert2": "^11.4.17",

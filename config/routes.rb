@@ -24,6 +24,7 @@ Rails.application.routes.draw do
     get 'new_collections_round', to: 'rounds#collections_new'
     get 'trivia', to: 'rounds#trivia'
     get 'state_selector', to: 'rounds#state_selector'
+    get 'country_selector', to: 'rounds#country_selector'
     resources :rounds, only: [] do
       get 'new_question', to: 'questions#new', on: :collection, as: 'new_question'
     end

@@ -22,6 +22,7 @@
   <%= render partial: 'game_tile', locals: { subject: 'logic', image_path: 'collections.png', name: "Collections", path: game_new_collections_round_path(Game.collections.id) } %>
   <%= render partial: 'game_tile', locals: { subject: 'general knowledge', image_path: 'trivia.png', name: "Trivia", path: game_trivia_path(game_id: Game.trivia.id) } %>
   <%= render partial: 'game_tile', locals: { subject: 'geography', image_path: 'state-selector.png', name: "State Selector", path: game_state_selector_path(game_id: Game.state_selector.id) } %>
+  <%= render partial: 'game_tile', locals: { subject: 'geography', image_path: 'state-selector.png', name: "Country Selector", path: game_country_selector_path(game_id: Game.country_selector.id) } %>
 </div>
 
 <script>

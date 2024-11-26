@@ -51,4 +51,8 @@ class RoundsController < ApplicationController
     @states_and_capitals = Rails.application.config_for(:states, env: 'production').to_json
     render 'games/state_selector'
   end
+
+  def country_selector
+    render 'games/country_selector'
+  end
 end
