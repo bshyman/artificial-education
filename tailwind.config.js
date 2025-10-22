@@ -1,7 +1,10 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-    content: ['./app/views/**/*.html.erb'],
+    content: [
+        './app/views/**/*.html.erb',
+        './app/javascript/**/*.{js,jsx,ts,tsx}',
+    ],
     presets: [],
     media: false,
     mode: 'jit',
@@ -688,6 +691,10 @@ module.exports = {
         },
     },
     variantOrder: ['first', 'last', 'odd', 'even', 'visited', 'checked', 'empty', 'read-only', 'group-hover', 'group-focus', 'focus-within', 'focus', 'focus-visible', 'active', 'disabled', 'hover'],
+    plugins: [
+        require('@tailwindcss/forms'),
+        require('@tailwindcss/typography'),
+    ],
     variants: {
         accessibility: ['responsive', 'focus-within', 'focus'],
         alignContent: ['responsive'],

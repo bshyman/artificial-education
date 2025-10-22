@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  get 'inertia-example', to: 'inertia_example#index'
   resources :user_prizes, only: [:index, :create]
   resources :prizes
   resources :groups

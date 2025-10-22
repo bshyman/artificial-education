@@ -26,7 +26,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.group_id = current_user.group_id
-    @user.role = 'basic'
+    @user.role = 'child'
     @user.birthday = Date.strptime(user_params[:birthday], '%m/%d/%Y') if user_params[:birthday].present?
 
     if @user.save
