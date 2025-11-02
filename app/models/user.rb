@@ -13,6 +13,10 @@ class User < ApplicationRecord
   end
 
   belongs_to :group
+  has_many :tasks, foreign_key: 'assigned_user_id', dependent: :destroy
+  has_many :created_tasks, class_name: 'Task', foreign_key: 'created_by_id', dependent: :destroy
+  has_many :answers, dependent: :destroy
+  has_many :rounds, dependent: :destroy
 
   enum role: { adult: 'adult', child: 'child', super: 'super' }
 

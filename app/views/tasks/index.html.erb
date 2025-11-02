@@ -1,0 +1,21 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-8">
+    <h1 class="text-4xl font-bold text-gray-800 whitespace-nowrap">
+      <% if current_user.adult? %>
+        📋 Task Manager
+      <% else %>
+        ⭐ My Tasks
+      <% end %>
+    </h1>
+
+    <% if current_user.adult? %>
+      <%= link_to '+ New Task', new_task_path, class: 'btn primary lg' %>
+    <% end %>
+  </div>
+
+  <% if current_user.adult? %>
+    <%= render 'parent_view' %>
+  <% else %>
+    <%= render 'child_view' %>
+  <% end %>
+</div>

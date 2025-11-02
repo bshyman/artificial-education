@@ -1,146 +1,440 @@
-<div class="max-h-screen">
+<div class="h-screen bg-cover bg-center relative overflow-hidden" style="background-image: url('<%= asset_path 'pokemon-field.png' %>');">
+  <!-- Dark overlay for better contrast -->
+  <div class="absolute inset-0 bg-black bg-opacity-30"></div>
 
-  <div x-data="pokemonGame" @keypress.window="submitAnswer($event)" class="flex items-center justify-center translate-y-10 transform">
-    <div class="grid grid-cols-12 gap-4 mx-10 w-full">
-      <div class="col-span-12 flex" style="max-height: 10vh;">
-        <i :class="determineOpacity(1)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
-        <i :class="determineOpacity(2)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
-        <i :class="determineOpacity(3)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
-        <i :class="determineOpacity(4)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
-        <i :class="determineOpacity(5)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
-        <i :class="determineOpacity(6)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
-        <i :class="determineOpacity(7)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
-        <i :class="determineOpacity(8)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
-        <i :class="determineOpacity(9)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
-        <i :class="determineOpacity(10)" class="transform transition-opacity duration-1000"><%= inline_svg_tag 'pokeball', class: 'max-w-full max-h-full' %></i>
+  <div x-data="pokemonGame" @keypress.window="submitAnswer($event)" class="relative z-10 h-full flex">
+
+    <!-- Left Sidebar - Pokemon History -->
+    <div class="w-64 bg-gradient-to-b from-black via-gray-900 to-transparent p-4 overflow-y-auto">
+      <h3 class="text-white font-bold text-lg mb-3 text-center border-b-2 border-yellow-400 pb-2">
+        🎯 Pokemon Caught
+      </h3>
+      <div class="space-y-2">
+        <template x-for="(pokemon, index) in pokemonHistory" :key="index">
+          <div
+            class="rounded-lg p-2 flex items-center gap-2 transition-all duration-300"
+            :class="pokemon.caught ? 'bg-green-600 bg-opacity-80' : 'bg-red-600 bg-opacity-80'">
+            <div class="flex-shrink-0">
+              <%= inline_svg_tag 'pokeball', class: 'w-6 h-6', 'x-bind:class' => "pokemon.caught ? '' : 'opacity-30'" %>
+            </div>
+            <span class="text-white font-bold text-sm capitalize flex-1" x-text="pokemon.name"></span>
+            <span class="text-xl" x-text="pokemon.caught ? '✓' : '✗'"></span>
+          </div>
+        </template>
+        <template x-if="pokemonHistory.length === 0">
+          <p class="text-gray-400 text-center text-sm mt-8">No Pokemon yet...</p>
+        </template>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Game HUD - Top Bar -->
+      <div class="flex justify-between items-center p-4 bg-gradient-to-b from-black to-transparent gap-4">
+        <!-- Pokeball Counter -->
+        <div class="flex-1 flex items-center justify-start gap-2">
+          <% 10.times do |i| %>
+            <div :class="determinePokeballClass(<%= i + 1 %>)" class="transition-all duration-300 flex-shrink-0" style="width: calc((100% - 9 * 0.5rem) / 10); max-width: 80px;">
+              <%= inline_svg_tag 'pokeball', class: 'w-full h-auto' %>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Score Badge -->
+        <div class="bg-yellow-400 rounded-full px-6 py-2 border-4 border-yellow-600 shadow-lg flex-shrink-0">
+          <span class="text-3xl font-black text-yellow-900 whitespace-nowrap">
+            <span x-text="correctlyAnswered"></span>/<span x-text="currentQuestion - 1"></span>
+          </span>
+        </div>
       </div>
 
-      <div x-init="fetchNextPokemonQuestion()" id='pokemon-spellcheck-question-wrapper' class="col-span-9 p-6 bg-white border border-gray-300 rounded-lg" style="height: fit-content;">
-      </div>
-      <div class="col-span-3 border-l-2 border-green-600  shadow p-6">
-        <%#= render partial: 'points_progress_bar' %>
-
-        <div class="text-4xl mt-20 mx-auto text-center text-white">
-          <span x-text="correctlyAnswered"></span> / <span x-text="currentQuestion - 1"></span></div>
-
-        <!--      <div class="h-32 w-32 mx-auto bg-white rounded-full shadow border-8 border-indigo-700 flex items-center justify-center">-->
-        <!--        <div class="flex flex-col items-center">-->
-        <!--          <p class="text-indigo-700 text-base font-bold"><span x-text="percentCorrect()"></span>% </p>-->
-        <!--          <p class="text-gray-600 text-sm"><span x-text="correctlyAnswered"></span> / <span>10</span></p>-->
-        <!--        </div>-->
-        <!--      </div>-->
+      <!-- Main Game Area -->
+      <div
+        id='pokemon-spellcheck-question-wrapper'
+        class="flex-1 flex items-center justify-center p-4">
+        <!-- Question will be loaded here -->
       </div>
     </div>
   </div>
 </div>
 
 <style>
-    body {
-        max-height: 100%;
-    }
+body.swal2-shown > [aria-hidden="true"] {
+  transition: 0.1s filter;
+  filter: blur(10px);
+}
 
-    body.swal2-shown > [aria-hidden="true"] {
-        transition: 0.1s filter;
-        filter: blur(10px);
-    }
+.pokeball-default {
+  opacity: 0.3;
+  filter: grayscale(100%);
+}
 
-    .default {
-        opacity: 0.5;
-    }
+.pokeball-current {
+  opacity: 1;
+  filter: grayscale(0%);
+  animation: bounce 0.8s infinite;
+  transform: scale(1.2);
+}
 
-    .correct {
-        opacity: 1;
-    }
+.pokeball-correct {
+  opacity: 1;
+  filter: grayscale(0%) drop-shadow(0 0 8px #10b981);
+}
 
-    .incorrect {
-        opacity: 0.2;
-    }
+.pokeball-incorrect {
+  opacity: 0.4;
+  filter: grayscale(100%) brightness(0.5);
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0) scale(1.2);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.2);
+  }
+}
 </style>
+
 <script type="text/javascript" charset="utf-8">
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('pokemonGame', () => ({
-            currentQuestion: 1,
-            correctlyAnswered: 0,
-            question: {
-                problem: '',
-                correct: '',
-                answers: []
-            },
-            answerResults: [],
-            score: 0,
-            submitAnswer(event) {
-                if (this.currentQuestion > 10) {
-                    return
-                }
-                let correct = false;
-                if (event.type === 'click') {
-                    if (event.currentTarget.textContent.toLowerCase() === this.question.correct.toLowerCase()) {
-                        correct = true;
-                    }
-                } else if (event.type === 'keypress') {
-                    if (event.key.toLowerCase() === this.question.correct.toLowerCase()) {
-                        correct = true
-                    }
-                }
+(function() {
+  // Register component immediately if Alpine is available, otherwise wait for init
+  const registerPokemonGame = () => {
+  Alpine.data('pokemonGame', () => ({
+    currentQuestion: 1,
+    correctlyAnswered: 0,
+    question: {
+      problem: '',
+      correct: '',
+      answers: [],
+      name: ''
+    },
+    answerResults: [],
+    pokemonHistory: [],
+    score: 0,
+    isAnswering: false,
+    isFetchingQuestion: false,
+    gameId: null,
+    roundId: null,
+    hasInitialized: false,
 
-                this.answerResults.push(correct)
+    init() {
+      // Prevent multiple initializations
+      if (this.hasInitialized) {
+        console.log('Already initialized, skipping...')
+        return
+      }
+      this.hasInitialized = true
+      console.log('Pokemon game initializing...')
 
-                if (correct) {
-                    this.correctlyAnswered++
-                    this.currentQuestion++
-                } else {
-                    this.currentQuestion++
-                }
-                if (this.currentQuestion <= 10) {
-                    this.fetchNextPokemonQuestion()
-                } else {
-                    updateXp(this.correctlyAnswered)
-                    this.gameOver()
-                }
-                this.percentCorrect()
-            },
-            async fetchNextPokemonQuestion() {
-                console.log('fetching next question')
-                const response = await fetch('<%= new_question_pokemon_index_path %>')
-                const data = await response.json()
-                this.question = data.question
-                document.getElementById('pokemon-spellcheck-question-wrapper').innerHTML = data.partial
-            },
-            percentCorrect() {
-                this.score = Math.round((this.correctlyAnswered / 10) * 100)
-                return this.score
-            },
-            gameOver() {
-                swal.fire({
-                    title: `Game Over! <br> ${this.correctlyAnswered} out of 10`,
-                    text: "Play again? ",
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, play again!',
-                    reverseButtons: true,
-                    cancelButtonText: 'No thanks!',
-                    allowOutsideClick: false,
-                    stopKeydownPropagation: false,
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location = '<%= game_new_pokemon_round_path %>'
-                    } else {
-                        window.location = '<%= games_path %>'
-                    }
-                })
-            },
-            determineOpacity(questionNumber) {
-                if (this.currentQuestion === questionNumber) {
-                    return 'animate-pulse'
-                } else if (this.currentQuestion < questionNumber) {
-                    return 'default'
-                } else if (this.answerResults[questionNumber - 1]) {
-                    return 'correct'
-                } else {
-                    return 'incorrect'
-                }
-            }
-        }))
-    })
+      // Check if we're coming from a "Play Again" or starting fresh
+      const urlParams = new URLSearchParams(window.location.search)
+      const isNewGame = !urlParams.has('resume')
+
+      console.log('Is new game?', isNewGame)
+
+      // If it's a new game, clear any old state
+      if (isNewGame) {
+        const oldGameId = sessionStorage.getItem('pokemonGameId')
+        console.log('Old game ID:', oldGameId)
+        if (oldGameId) {
+          sessionStorage.removeItem(oldGameId)
+          console.log('Removed old game data')
+        }
+        sessionStorage.removeItem('pokemonGameId')
+        sessionStorage.removeItem('pokemonRoundId')
+        console.log('Cleared pokemonGameId and roundId')
+      }
+
+      // Generate or retrieve game ID
+      this.gameId = sessionStorage.getItem('pokemonGameId') || 'game_' + Date.now()
+      console.log('Current game ID:', this.gameId)
+      sessionStorage.setItem('pokemonGameId', this.gameId)
+
+      // Load saved state
+      const hasSavedState = this.loadGameState()
+
+      console.log('Has saved state:', hasSavedState)
+      console.log('isFetchingQuestion:', this.isFetchingQuestion)
+
+      // If no saved state, start a new game
+      if (!hasSavedState) {
+        console.log('Starting new game, creating round and fetching first question...')
+
+        // Use nextTick to ensure DOM is ready
+        this.$nextTick(async () => {
+          console.log('nextTick - creating round')
+          await this.createRound()
+          console.log('nextTick - about to fetch question')
+          this.fetchNextPokemonQuestion()
+        })
+      }
+    },
+
+    async createRound() {
+      try {
+        const response = await fetch('<%= create_round_pokemon_index_path %>', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+          }
+        })
+        const data = await response.json()
+        this.roundId = data.round_id
+        sessionStorage.setItem('pokemonRoundId', this.roundId)
+        console.log('Round created:', this.roundId)
+      } catch (error) {
+        console.error('Error creating round:', error)
+      }
+    },
+
+    saveGameState() {
+      const wrapper = document.getElementById('pokemon-spellcheck-question-wrapper')
+      const state = {
+        currentQuestion: this.currentQuestion,
+        correctlyAnswered: this.correctlyAnswered,
+        question: this.question,
+        answerResults: this.answerResults,
+        pokemonHistory: this.pokemonHistory,
+        score: this.score,
+        roundId: this.roundId,
+        questionHTML: wrapper ? wrapper.innerHTML : '',
+        isFetchingQuestion: false // Always reset this when saving
+      }
+      sessionStorage.setItem(this.gameId, JSON.stringify(state))
+    },
+
+    loadGameState() {
+      const savedState = sessionStorage.getItem(this.gameId)
+      if (savedState) {
+        const state = JSON.parse(savedState)
+        this.currentQuestion = state.currentQuestion
+        this.correctlyAnswered = state.correctlyAnswered
+        this.question = state.question
+        this.answerResults = state.answerResults
+        this.pokemonHistory = state.pokemonHistory
+        this.score = state.score
+        this.roundId = state.roundId || sessionStorage.getItem('pokemonRoundId')
+        this.isFetchingQuestion = state.isFetchingQuestion || false
+
+        // If we have a saved question HTML, render it
+        if (state.questionHTML) {
+          this.renderSavedQuestion(state.questionHTML)
+        }
+        return true
+      }
+      return false
+    },
+
+    renderSavedQuestion(html) {
+      const wrapper = document.getElementById('pokemon-spellcheck-question-wrapper')
+      wrapper.innerHTML = html
+
+      // Reinitialize Alpine components
+      setTimeout(() => {
+        const newComponent = wrapper.querySelector('[x-data]')
+        if (newComponent && window.Alpine) {
+          Alpine.initTree(newComponent)
+          console.log('Saved question restored')
+        }
+      }, 50)
+    },
+
+    async submitAnswer(event) {
+      if (this.currentQuestion > 10 || this.isAnswering) {
+        return
+      }
+
+      this.isAnswering = true
+      let selectedLetter = ''
+      let correct = false
+
+      if (event.type === 'click') {
+        // Get letter from data attribute instead of textContent to avoid HTML
+        selectedLetter = event.currentTarget.getAttribute('data-letter').toLowerCase()
+        correct = selectedLetter === this.question.correct.toLowerCase()
+      } else if (event.type === 'keypress') {
+        selectedLetter = event.key.toLowerCase()
+        correct = selectedLetter === this.question.correct.toLowerCase()
+      }
+
+      console.log('Answer submitted:', { selectedLetter, correctLetter: this.question.correct, correct })
+
+      // Persist answer to backend
+      await this.persistAnswer(selectedLetter, correct)
+
+      // Find the Alpine component in the question wrapper and update its state
+      setTimeout(() => {
+        const wrapper = document.getElementById('pokemon-spellcheck-question-wrapper')
+        const component = wrapper?.querySelector('[x-data]')
+
+        if (component && window.Alpine) {
+          const alpineData = Alpine.$data(component)
+          if (alpineData) {
+            alpineData.selectedLetter = selectedLetter
+            alpineData.isCorrect = correct
+            alpineData.showFeedback = true
+            console.log('Feedback triggered:', alpineData)
+          }
+        }
+      }, 100)
+
+      // Wait for animation to complete
+      await new Promise(resolve => setTimeout(resolve, 2500))
+
+      this.answerResults.push(correct)
+
+      // Add to Pokemon history
+      this.pokemonHistory.push({
+        name: this.question.name || 'Unknown',
+        caught: correct
+      })
+
+      if (correct) {
+        this.correctlyAnswered++
+      }
+
+      this.currentQuestion++
+
+      // Save state after each answer
+      this.saveGameState()
+
+      if (this.currentQuestion <= 10) {
+        this.isAnswering = false
+        this.fetchNextPokemonQuestion()
+      } else {
+        updateXp(this.correctlyAnswered * 10)
+        this.gameOver()
+      }
+
+      this.percentCorrect()
+    },
+
+    async persistAnswer(answer, isCorrect) {
+      try {
+        // Format question content for storage
+        const questionContent = `Pokemon: ${this.question.name}, Missing letter: ${this.question.correct}`
+
+        const payload = {
+          round_id: this.roundId,
+          answer: answer,
+          is_correct: isCorrect,
+          question_content: questionContent
+        }
+
+        console.log('Persisting answer with payload:', payload)
+
+        const response = await fetch('<%= submit_answer_pokemon_index_path %>', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+          },
+          body: JSON.stringify(payload)
+        })
+
+        if (!response.ok) {
+          const errorText = await response.text()
+          console.error('Failed to persist answer:', response.status, errorText)
+          return
+        }
+
+        const data = await response.json()
+        console.log('Answer persisted successfully:', data)
+      } catch (error) {
+        console.error('Error persisting answer:', error)
+      }
+    },
+
+    async fetchNextPokemonQuestion() {
+      if (this.isFetchingQuestion) {
+        console.log('Already fetching question, skipping...')
+        return
+      }
+
+      this.isFetchingQuestion = true
+      console.log('fetching next question')
+
+      try {
+        const response = await fetch('<%= new_question_pokemon_index_path %>')
+        const data = await response.json()
+        this.question = data.question
+
+        const wrapper = document.getElementById('pokemon-spellcheck-question-wrapper')
+        wrapper.innerHTML = data.partial
+
+        // Force Alpine to reinitialize the new content
+        setTimeout(() => {
+          const newComponent = wrapper.querySelector('[x-data]')
+          if (newComponent && window.Alpine) {
+            Alpine.initTree(newComponent)
+            console.log('New question initialized')
+          }
+          this.isFetchingQuestion = false
+
+          // Save state AFTER rendering is complete
+          this.saveGameState()
+        }, 50)
+      } catch (error) {
+        console.error('Error fetching question:', error)
+        this.isFetchingQuestion = false
+      }
+    },
+
+    percentCorrect() {
+      this.score = Math.round((this.correctlyAnswered / 10) * 100)
+      return this.score
+    },
+
+    gameOver() {
+      const score = this.correctlyAnswered
+      const message = score >= 8 ? '🏆 Amazing!' : score >= 6 ? '⭐ Great Job!' : '💪 Keep Practicing!'
+
+      // Clear the saved game state
+      sessionStorage.removeItem(this.gameId)
+      sessionStorage.removeItem('pokemonGameId')
+      sessionStorage.removeItem('pokemonRoundId')
+
+      swal.fire({
+        title: `${message}<br><span class="text-6xl mb-4">🎉</span>`,
+        html: `<p class="text-2xl mb-4">You caught <strong class="text-green-600">${score}</strong> out of 10 Pokemon!</p>
+               <p class="text-lg">You earned <strong class="text-yellow-600">${score * 10} points</strong>!</p>`,
+        showCancelButton: true,
+        confirmButtonColor: '#10b981',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: '🎮 Play Again!',
+        cancelButtonText: '🏠 Back to Games',
+        reverseButtons: true,
+        allowOutsideClick: false,
+        stopKeydownPropagation: false,
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location = '<%= game_new_pokemon_round_path(Game.pokemon_spellcheck) %>'
+        } else {
+          window.location = '<%= games_path %>'
+        }
+      })
+    },
+
+    determinePokeballClass(questionNumber) {
+      if (this.currentQuestion === questionNumber) {
+        return 'pokeball-current'
+      } else if (this.currentQuestion < questionNumber) {
+        return 'pokeball-default'
+      } else if (this.answerResults[questionNumber - 1]) {
+        return 'pokeball-correct'
+      } else {
+        return 'pokeball-incorrect'
+      }
+    }
+  }))
+}
+
+  // Only register once
+  if (!window.pokemonGameRegistered) {
+    window.pokemonGameRegistered = true
+    document.addEventListener('alpine:init', registerPokemonGame)
+  }
+})();
 </script>

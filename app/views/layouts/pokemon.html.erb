@@ -13,8 +13,7 @@
 </head>
 
 <body>
-<%= render partial: 'layouts/navbar' %>
-<div class="h-screen overflow-hidden" style="background-image: url('<%= asset_path 'pokemon-field.png' %>'); background-size: cover; background-color: cornflowerblue;">
+<div class="min-h-screen overflow-hidden" style="background-image: url('<%= asset_path 'pokemon-field.png' %>'); background-size: cover; background-color: cornflowerblue;">
   <%= yield %>
 </div>
 </body>

@@ -118,6 +118,10 @@
           <%= link_to 'Store', store_path %>
         </li>
 
+        <li class="cursor-pointer h-full flex items-center <%= request.path == tasks_path ? 'border-yellow-400 text-yellow-400 border-b-2' : 'text-gray-800' %> text-sm mr-10 tracking-normal">
+          <%= link_to '📝 Tasks', tasks_path, class: 'whitespace-nowrap' %>
+        </li>
+
         <li class="h-full flex items-center ml-auto">
           <%= render partial: 'layouts/score_progress_bar' %>
         </li>

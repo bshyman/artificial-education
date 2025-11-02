@@ -1,0 +1,173 @@
+<div x-data="childTasks">
+  <!-- Points Summary -->
+  <div class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-lg p-6 mb-8 text-white">
+    <div class="flex justify-between items-center">
+      <div>
+        <h2 class="text-2xl font-bold mb-2">Your Progress</h2>
+        <p class="text-lg">Level <%= current_user.level %> • <%= current_user.xp %> XP</p>
+      </div>
+      <div class="text-right">
+        <p class="text-4xl font-bold" x-text="'$' + bank"></p>
+        <p class="text-sm">in your bank</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Tasks -->
+  <div class="mb-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+      <span class="mr-2">📝</span> Tasks To Do
+      <span class="ml-3 px-3 py-1 bg-yellow-400 text-yellow-900 rounded-full text-sm font-bold">
+        <%= @tasks.pending.count %>
+      </span>
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <% @tasks.pending.each do |task| %>
+        <div
+          x-show="!completedTasks.includes(<%= task.id %>)"
+          class="bg-white rounded-xl shadow-lg p-6 border-2 border-gray-200 hover:shadow-xl transition-all duration-300 transform hover:scale-105 cursor-pointer"
+          @click="completeTask(<%= task.id %>, <%= task.points %>)">
+
+          <div class="text-center mb-4">
+            <span class="text-6xl"><%= task.emoji_for_category %></span>
+          </div>
+
+          <h3 class="text-xl font-bold text-gray-800 text-center mb-2"><%= task.title %></h3>
+
+          <% if task.description.present? %>
+            <p class="text-gray-600 text-sm text-center mb-4"><%= task.description %></p>
+          <% end %>
+
+          <div class="flex justify-center items-center gap-2 mb-4">
+            <span class="text-3xl">⭐</span>
+            <span class="text-2xl font-bold text-yellow-600"><%= task.points %></span>
+            <span class="text-lg text-gray-600">points</span>
+          </div>
+
+          <% if task.due_date %>
+            <p class="text-center text-sm <%= task.overdue? ? 'text-red-600 font-bold' : 'text-gray-500' %>">
+              <%= task.overdue? ? '⏰ Overdue!' : "Due: #{task.due_date.strftime("%b %d")}" %>
+            </p>
+          <% end %>
+
+          <button class="btn success block w-full mt-4 text-lg">
+            ✓ Mark Complete
+          </button>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @tasks.pending.empty? %>
+      <div class="text-center py-12 bg-green-50 rounded-xl">
+        <p class="text-4xl mb-4">🎉</p>
+        <p class="text-2xl font-bold text-green-600">All done!</p>
+        <p class="text-gray-600">Great job completing all your tasks!</p>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Completed Tasks -->
+  <div>
+    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+      <span class="mr-2">✅</span> Completed
+      <span class="ml-3 px-3 py-1 bg-green-400 text-green-900 rounded-full text-sm font-bold">
+        <%= @tasks.completed.count %>
+      </span>
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 opacity-60">
+      <% @tasks.completed.limit(6).each do |task| %>
+        <div class="bg-green-50 rounded-xl shadow p-6 border-2 border-green-200">
+          <div class="text-center mb-2">
+            <span class="text-4xl"><%= task.emoji_for_category %></span>
+          </div>
+
+          <h3 class="text-lg font-bold text-gray-700 text-center mb-2"><%= task.title %></h3>
+
+          <div class="flex justify-center items-center gap-2">
+            <span class="text-xl">⭐</span>
+            <span class="text-xl font-bold text-green-600">+<%= task.points %></span>
+          </div>
+
+          <p class="text-center text-xs text-gray-500 mt-2">
+            Completed <%= time_ago_in_words(task.completed_at) %> ago
+          </p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Celebration Modal -->
+  <div
+    x-show="showCelebration"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 scale-90"
+    x-transition:enter-end="opacity-100 scale-100"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+    @click="showCelebration = false">
+
+    <div class="bg-white rounded-2xl p-8 text-center max-w-md transform scale-110">
+      <div class="text-8xl mb-4 animate-bounce">🎉</div>
+      <h2 class="text-3xl font-bold text-gray-800 mb-2">Awesome!</h2>
+      <p class="text-xl text-gray-600 mb-4">You earned <span class="text-yellow-600 font-bold" x-text="pointsEarned"></span> points!</p>
+      <p class="text-lg text-gray-600">Keep up the great work!</p>
+
+      <button @click="showCelebration = false" class="btn success lg mt-6">
+        Yay! 🎊
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('childTasks', () => ({
+    completedTasks: [],
+    showCelebration: false,
+    pointsEarned: 0,
+    bank: <%= current_user.bank %>,
+
+    completeTask(taskId, points) {
+      if (this.completedTasks.includes(taskId)) return
+
+      fetch(`/tasks/${taskId}/complete`, {
+        method: 'POST',
+        headers: window.postHeaders
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          this.completedTasks.push(taskId)
+          this.pointsEarned = data.points_earned
+          this.bank = data.new_bank
+          this.showCelebration = true
+
+          // Update navbar bank display
+          window.dispatchEvent(new CustomEvent('updateBank', { detail: { bank: data.new_bank } }))
+
+          // Hide celebration after 3 seconds
+          setTimeout(() => {
+            this.showCelebration = false
+          }, 3000)
+        }
+      })
+    }
+  }))
+})
+</script>
+
+<style>
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 1s infinite;
+}
+</style>

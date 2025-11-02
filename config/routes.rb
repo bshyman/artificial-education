@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  resources :answers
   get 'inertia-example', to: 'inertia_example#index'
   resources :user_prizes, only: [:index, :create]
   resources :prizes
@@ -11,9 +12,15 @@ Rails.application.routes.draw do
     post 'authenticate', to: 'users#authenticate', on: :member
   end
 
+  resources :tasks do
+    post 'complete', on: :member
+  end
+
   post 'switch_user', to: 'application#switch_user'
   resources :pokemon, except: :destroy do
     get 'new_question' => 'pokemon#new_question', on: :collection
+    post 'create_round' => 'pokemon#create_round', on: :collection
+    post 'submit_answer' => 'pokemon#submit_answer', on: :collection
     get 'pokedex', on: :collection
   end
 

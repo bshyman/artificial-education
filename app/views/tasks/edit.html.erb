@@ -1,0 +1,82 @@
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+  <h1 class="text-4xl font-bold text-gray-800 mb-8">✏️ Edit Task</h1>
+
+  <%= form_with(model: @task, local: true, class: 'bg-white shadow-md rounded-lg p-8') do |f| %>
+    <% if @task.errors.any? %>
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+        <h2 class="text-red-800 font-bold mb-2"><%= pluralize(@task.errors.count, "error") %> prevented this task from being saved:</h2>
+        <ul class="list-disc list-inside text-red-700">
+          <% @task.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-6">
+      <%= f.label :title, "Task Title", class: 'block text-gray-700 font-bold mb-2' %>
+      <%= f.text_field :title, placeholder: 'e.g., Clean your room', class: 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500' %>
+    </div>
+
+    <div class="mb-6">
+      <%= f.label :description, "Description (optional)", class: 'block text-gray-700 font-bold mb-2' %>
+      <%= f.text_area :description, rows: 3, placeholder: 'Add details about what needs to be done...', class: 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500' %>
+    </div>
+
+    <div class="mb-6">
+      <%= f.label :assigned_user_id, "Assign To", class: 'block text-gray-700 font-bold mb-2' %>
+      <%= f.select :assigned_user_id,
+                   options_from_collection_for_select(@children, :id, :first_name, @task.assigned_user_id),
+                   {},
+                   class: 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500' %>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      <div>
+        <%= f.label :points, "Points Reward", class: 'block text-gray-700 font-bold mb-2' %>
+        <%= f.number_field :points, min: 0, step: 5, class: 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500' %>
+      </div>
+
+      <div>
+        <%= f.label :due_date, "Due Date (optional)", class: 'block text-gray-700 font-bold mb-2' %>
+        <%= f.datetime_local_field :due_date, class: 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500' %>
+      </div>
+    </div>
+
+    <div class="mb-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <div class="flex items-center mb-3">
+        <%= f.check_box :repeating, class: 'mr-2 w-5 h-5 text-blue-600' %>
+        <%= f.label :repeating, "🔄 Make this a repeating task", class: 'text-gray-700 font-bold' %>
+      </div>
+
+      <div class="ml-7" id="repeat-options">
+        <%= f.label :repeat_frequency, "Repeat", class: 'block text-gray-700 font-semibold mb-2 text-sm' %>
+        <%= f.select :repeat_frequency,
+                     options_for_select([['Daily', 'daily'], ['Weekly', 'weekly'], ['Monthly', 'monthly']], @task.repeat_frequency),
+                     { prompt: 'Select frequency' },
+                     class: 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm' %>
+      </div>
+    </div>
+
+    <div class="flex gap-4">
+      <%= f.submit 'Update Task', class: 'btn primary lg flex-1' %>
+      <%= link_to 'Cancel', tasks_path, class: 'btn secondary lg' %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  const repeatCheckbox = document.querySelector('#task_repeating')
+  const repeatOptions = document.querySelector('#repeat-options')
+
+  function toggleRepeatOptions() {
+    if (repeatCheckbox.checked) {
+      repeatOptions.classList.remove('opacity-50', 'pointer-events-none')
+    } else {
+      repeatOptions.classList.add('opacity-50', 'pointer-events-none')
+    }
+  }
+
+  repeatCheckbox.addEventListener('change', toggleRepeatOptions)
+  toggleRepeatOptions()
+</script>
