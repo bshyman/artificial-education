@@ -23,7 +23,6 @@ gem 'omniauth-rails_csrf_protection', '~> 1.0' # prevents forged authentication 
 gem 'pg', '~> 1.1'
 gem 'puma', '~> 5.0'
 gem 'redis', '~> 4.0'
-gem 'rollbar'
 gem 'ruby-openai'
 gem 'sass-rails', '>= 6'
 gem 'sentry-rails'

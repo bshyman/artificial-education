@@ -241,7 +241,6 @@ GEM
     redis (4.8.1)
     regexp_parser (2.9.0)
     rexml (3.2.6)
-    rollbar (3.5.1)
     rouge (4.2.0)
     rubocop (1.60.2)
       json (~> 2.3)
@@ -357,7 +356,6 @@ DEPENDENCIES
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.4)
   redis (~> 4.0)
-  rollbar
   rubocop
   rubocop-rails
   ruby-openai
