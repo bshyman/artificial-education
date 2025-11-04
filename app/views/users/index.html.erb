@@ -13,7 +13,10 @@
       </h4>
     </div>
     <div class="mt-6 md:mt-0">
-      <%= link_to 'Add A Student', new_user_path, class: 'btn secondary' if current_user.adult? %>
+      <%= link_to new_user_path, class: 'btn secondary flex items-center gap-3' do  %>
+        <box-icon type='solid' name='user-plus'></box-icon>
+        <span>Add A Student</span>
+      <% end %>
     </div>
   </div>
 </div>

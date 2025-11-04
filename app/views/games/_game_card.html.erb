@@ -1,0 +1,88 @@
+<div
+  x-data="{ hover: false }"
+  @mouseenter="hover = true"
+  @mouseleave="hover = false"
+  class="transform transition-all duration-300 ease-out"
+  :class="hover ? 'scale-105 -translate-y-2' : 'scale-100'">
+
+  <%= link_to path do %>
+    <div class="relative bg-white rounded-2xl shadow-xl overflow-hidden h-full">
+      <!-- Color Banner with Emoji -->
+      <div class="h-32 bg-gradient-to-r <%= color %> relative overflow-hidden">
+        <div class="absolute inset-0 flex items-center justify-center">
+          <span
+            class="text-8xl transform transition-all duration-500"
+            :class="hover ? 'scale-125 rotate-12' : 'scale-100 rotate-0'">
+            <%= emoji %>
+          </span>
+        </div>
+
+        <!-- Subject Badge -->
+        <div class="absolute top-4 right-4">
+          <span class="bg-white bg-opacity-90 px-3 py-1 rounded-full text-xs font-bold text-gray-700 shadow">
+            <%= subject %>
+          </span>
+        </div>
+      </div>
+
+      <!-- Game Image -->
+      <div class="relative h-48 overflow-hidden">
+        <%= image_tag image_path, class: 'w-full h-full object-cover transition-transform duration-500', ':class': "hover ? 'scale-110' : 'scale-100'" %>
+
+        <!-- Hover Overlay -->
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 transition-opacity duration-300"
+          :class="hover ? 'opacity-60' : 'opacity-0'">
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="p-6">
+        <h3 class="text-2xl font-bold text-gray-800 mb-2">
+          <%= name %>
+        </h3>
+
+        <p class="text-gray-600 text-sm mb-4 h-12">
+          <%= description %>
+        </p>
+
+        <!-- Stats Row -->
+        <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+          <div class="flex items-center">
+            <span class="text-yellow-500 font-bold text-lg">⭐ 100 pts</span>
+          </div>
+
+          <!-- Play Button -->
+          <button
+            class="px-6 py-2 rounded-full font-bold text-white transition-all duration-300 transform"
+            :class="hover ? 'bg-gradient-to-r <%= color %> scale-110 shadow-lg' : 'bg-gray-400 scale-100'">
+            <span x-show="!hover">Play</span>
+            <span x-show="hover">Let's Go! 🚀</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Sparkle Effect on Hover -->
+      <div
+        class="absolute top-0 left-0 w-full h-full pointer-events-none opacity-0 transition-opacity duration-300"
+        :class="hover ? 'opacity-100' : 'opacity-0'">
+        <div class="absolute top-8 right-8 text-2xl animate-ping">✨</div>
+        <div class="absolute top-16 left-8 text-xl animate-ping" style="animation-delay: 0.2s;">⭐</div>
+        <div class="absolute bottom-16 right-12 text-lg animate-ping" style="animation-delay: 0.4s;">💫</div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<style>
+@keyframes ping {
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+.animate-ping {
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+</style>

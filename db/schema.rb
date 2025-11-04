@@ -10,10 +10,25 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_25_015000) do
+ActiveRecord::Schema.define(version: 2025_10_26_040621) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "answers", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "question_id"
+    t.string "content"
+    t.boolean "is_correct"
+    t.integer "value"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "round_id", null: false
+    t.text "question_content"
+    t.index ["question_id"], name: "index_answers_on_question_id"
+    t.index ["round_id"], name: "index_answers_on_round_id"
+    t.index ["user_id"], name: "index_answers_on_user_id"
+  end
 
   create_table "games", force: :cascade do |t|
     t.string "name", null: false
@@ -71,6 +86,25 @@ ActiveRecord::Schema.define(version: 2024_05_25_015000) do
     t.index ["user_id"], name: "index_rounds_on_user_id"
   end
 
+  create_table "tasks", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description"
+    t.integer "points", default: 0, null: false
+    t.integer "assigned_user_id", null: false
+    t.integer "created_by_id", null: false
+    t.string "status", default: "pending", null: false
+    t.boolean "repeating", default: false
+    t.string "repeat_frequency"
+    t.datetime "due_date"
+    t.datetime "completed_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["assigned_user_id", "status"], name: "index_tasks_on_assigned_user_id_and_status"
+    t.index ["assigned_user_id"], name: "index_tasks_on_assigned_user_id"
+    t.index ["created_by_id"], name: "index_tasks_on_created_by_id"
+    t.index ["status"], name: "index_tasks_on_status"
+  end
+
   create_table "user_prizes", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "prize_id", null: false
@@ -96,6 +130,7 @@ ActiveRecord::Schema.define(version: 2024_05_25_015000) do
     t.string "email"
   end
 
+  add_foreign_key "answers", "rounds"
   add_foreign_key "user_prizes", "prizes"
   add_foreign_key "user_prizes", "users"
 end

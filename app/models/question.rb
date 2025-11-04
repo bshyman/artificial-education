@@ -58,12 +58,7 @@ class Question < ApplicationRecord
   end
 
   def random_pokemon
-    pokemon = nil
-    while pokemon.nil?
-      random_pokedex_id = rand(900)
-      pokemon           = Pokemon.find_by_pokedex_id(random_pokedex_id)
-    end
-    pokemon
+    Pokemon.all.sample
   end
 
   def addition_question

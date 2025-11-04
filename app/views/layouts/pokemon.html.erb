@@ -7,14 +7,13 @@
   <%= csp_meta_tag %>
 
   <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-  <%= stylesheet_pack_tag 'application', media: 'all' %>
-  <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload', defer: true %>
+  <%= vite_client_tag %>
+  <%= vite_javascript_tag 'application' %>
   <%= yield :head %>
 </head>
 
 <body>
-<%= render partial: 'layouts/navbar' %>
-<div class="h-screen overflow-hidden" style="background-image: url('<%= asset_path 'pokemon-field.png' %>'); background-size: cover; background-color: cornflowerblue;">
+<div class="min-h-screen overflow-hidden" style="background-image: url('<%= asset_path 'pokemon-field.png' %>'); background-size: cover; background-color: cornflowerblue;">
   <%= yield %>
 </div>
 </body>

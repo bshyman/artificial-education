@@ -6,15 +6,23 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validate :birthday_is_valid_format
   validate :bank_is_not_negative
-  validates :email, presence: true, if: :admin?
+  validates :email, presence: true, if: :adult?
 
   def bank_is_not_negative
     errors.add(:base, 'bank cannot be negative') if bank.negative?
   end
 
   belongs_to :group
+  has_many :tasks, foreign_key: 'assigned_user_id', dependent: :destroy
+  has_many :created_tasks, class_name: 'Task', foreign_key: 'created_by_id', dependent: :destroy
+  has_many :answers, dependent: :destroy
+  has_many :rounds, dependent: :destroy
 
-  enum role: { admin: 'admin', basic: 'basic' }
+  enum role: { adult: 'adult', child: 'child', super: 'super' }
+
+  def adult?
+    role == 'adult' || role == 'super'
+  end
 
   def level
     xp / 100 + 1
@@ -39,6 +47,10 @@ class User < ApplicationRecord
 
   def last_group_member?
     group.users.count == 1
+  end
+
+  def icon_for_role
+    adult? ? 'user' : 'child'
   end
 
   private

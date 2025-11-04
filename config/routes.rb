@@ -1,28 +1,37 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  resources :answers
+  get 'inertia-example', to: 'inertia_example#index'
   resources :user_prizes, only: [:index, :create]
   resources :prizes
   resources :groups
   resources :players
   resources :users, except: :show do
-    patch 'update_xp', to: 'users#update_xp', on: :member
+    patch 'update_xp', to: 'users#update_xp', on: :collection
     post 'authenticate', to: 'users#authenticate', on: :member
+  end
+
+  resources :tasks do
+    post 'complete', on: :member
   end
 
   post 'switch_user', to: 'application#switch_user'
   resources :pokemon, except: :destroy do
     get 'new_question' => 'pokemon#new_question', on: :collection
+    post 'create_round' => 'pokemon#create_round', on: :collection
+    post 'submit_answer' => 'pokemon#submit_answer', on: :collection
     get 'pokedex', on: :collection
   end
 
   get 'store', to: 'home#store'
 
-  resources :games, only: [:index] do
+  resources :games do
     get 'new_pokemon_round', to: 'rounds#pokemon_new'
     get 'new_simple_math_round', to: 'rounds#simple_math_new'
     get 'new_collections_round', to: 'rounds#collections_new'
     get 'trivia', to: 'rounds#trivia'
+    get 'state_selector', to: 'rounds#state_selector'
     resources :rounds, only: [] do
       get 'new_question', to: 'questions#new', on: :collection, as: 'new_question'
     end
@@ -42,6 +51,8 @@ Rails.application.routes.draw do
   resources :questions, only: [] do
     get 'new_simple_math', on: :collection
   end
+
+  get 'state_selector', to: 'rounds#state_selector'
 
   root to: 'games#index'
   get 'landing' => 'home#landing'

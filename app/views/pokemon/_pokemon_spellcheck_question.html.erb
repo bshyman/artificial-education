@@ -1,22 +1,231 @@
-<div class="flex flex-col justify-center">
-  <div class="flex items-center justify-center h-60">
-    <%= inline_svg_tag "pokemon/#{question[:id]}.svg", class: 'max-h-60' %>
-  </div>
+<% index_to_hide = question[:name].chars.map.with_index { |letter, idx| idx if letter == question[:correct].downcase }.compact.sample %>
 
-  <hr class="border border-gray-200 my-8">
-  <div class="mx-auto w-full">
-    <div class="flex w-full items-center justify-evenly">
-
-      <% index_to_hide = question[:name].chars.map.with_index { |letter, idx| idx if letter == question[:correct].downcase }.compact.sample %>
-      <% question[:name].upcase.chars.each.with_index do |letter, idx| %>
-        <div class="border-b-2 border-gray-400 my-4 flex justify-around p-4 text-2xl"><div><%== idx == index_to_hide ? '&nbsp;' : letter %></div></div>
-      <% end %>
+<div class="h-full flex flex-col" x-data="{
+  selectedLetter: '',
+  correctLetter: '<%= question[:correct] %>',
+  isCorrect: false,
+  showFeedback: false,
+  hiddenIndex: <%= index_to_hide %>
+}">
+  <div class="flex-1 flex flex-col justify-center">
+    <!-- Pokemon Display - Compact -->
+    <div class="flex items-center justify-center mb-4" style="height: 30vh;">
+      <div class="relative">
+        <!-- Pokemon SVG with reaction animation -->
+        <div
+          class="relative z-10 transform transition-all duration-300 max-h-full"
+          :class="{
+            'animate-celebrate': showFeedback && isCorrect,
+            'animate-shake': showFeedback && !isCorrect
+          }">
+          <%= inline_svg_tag "pokemon/#{question[:id]}.svg", class: 'max-h-full drop-shadow-2xl', style: 'max-height: 30vh;' %>
+        </div>
+      </div>
     </div>
 
-    <div class="mt-8 flex w-full items-center justify-evenly">
-      <% alphabet.sample(3).push(question[:correct]).shuffle.each do |letter| %>
-        <div @click="submitAnswer($event)" class="border-2 border-gray-400 m-4 w-full flex justify-center p-4 cursor-pointer text-2xl hover:opacity-50 transform hover:-translate-y-1 transition uppercase"><%= letter %></div>
-      <% end %>
+    <!-- Spelling Challenge Section - Compact -->
+    <div class="bg-white bg-opacity-90 rounded-2xl shadow-xl p-4">
+      <!-- Letter Boxes - Compact -->
+      <div class="flex w-full items-center justify-center mb-4 gap-1.5">
+        <% question[:name].upcase.chars.each.with_index do |letter, idx| %>
+          <div
+            class="letter-box <%= idx == index_to_hide ? 'missing-letter' : '' %>"
+            :class="{
+              'missing-letter-correct': showFeedback && isCorrect && <%= idx %> === hiddenIndex,
+              'missing-letter-incorrect': showFeedback && !isCorrect && <%= idx %> === hiddenIndex
+            }">
+            <div class="text-2xl font-bold">
+              <% if idx == index_to_hide %>
+                <span x-show="!showFeedback">?</span>
+                <span
+                  x-show="showFeedback"
+                  x-transition:enter="transition ease-out duration-300"
+                  x-transition:enter-start="opacity-0 scale-0"
+                  x-transition:enter-end="opacity-100 scale-100">
+                  <%= letter %>
+                </span>
+              <% else %>
+                <%= letter %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Answer Options - Compact -->
+      <div class="grid grid-cols-4 gap-2 mb-4">
+        <% alphabet.sample(3).push(question[:correct]).shuffle.each do |letter| %>
+          <button
+            @click="submitAnswer($event)"
+            :disabled="showFeedback"
+            class="answer-button relative"
+            :class="{
+              'answer-correct': showFeedback && '<%= letter %>'.toLowerCase() === correctLetter.toLowerCase(),
+              'answer-incorrect': showFeedback && '<%= letter %>'.toLowerCase() === selectedLetter.toLowerCase() && !isCorrect,
+              'answer-disabled': showFeedback && '<%= letter %>'.toLowerCase() !== correctLetter.toLowerCase() && '<%= letter %>'.toLowerCase() !== selectedLetter.toLowerCase()
+            }"
+            data-letter="<%= letter %>">
+
+            <!-- Checkmark or X overlay -->
+            <div
+              x-show="showFeedback && '<%= letter %>'.toLowerCase() === correctLetter.toLowerCase()"
+              x-transition:enter="transition ease-out duration-300 delay-300"
+              x-transition:enter-start="opacity-0 scale-0"
+              x-transition:enter-end="opacity-100 scale-100"
+              class="absolute -top-1.5 -right-1.5 bg-green-500 rounded-full w-8 h-8 flex items-center justify-center text-white text-lg font-bold shadow-lg z-20">
+              ✓
+            </div>
+
+            <div
+              x-show="showFeedback && '<%= letter %>'.toLowerCase() === selectedLetter.toLowerCase() && !isCorrect"
+              x-transition:enter="transition ease-out duration-300 delay-300"
+              x-transition:enter-start="opacity-0 scale-0"
+              x-transition:enter-end="opacity-100 scale-100"
+              class="absolute -top-1.5 -right-1.5 bg-red-500 rounded-full w-8 h-8 flex items-center justify-center text-white text-lg font-bold shadow-lg z-20">
+              ✗
+            </div>
+
+            <div class="text-2xl font-bold uppercase py-3">
+              <%= letter %>
+            </div>
+          </button>
+        <% end %>
+      </div>
+
+      <!-- Feedback Message - Compact -->
+      <div
+        x-show="showFeedback"
+        x-transition:enter="transition ease-out duration-500"
+        x-transition:enter-start="opacity-0 translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0">
+
+        <!-- Correct Answer -->
+        <div x-show="isCorrect" class="text-center">
+          <div class="bg-gradient-to-r from-green-400 to-green-600 rounded-xl px-4 py-3 shadow-xl">
+            <div class="text-4xl mb-1 animate-bounce">🎉</div>
+            <p class="text-xl font-bold text-white">You caught <%= question[:name].capitalize %>!</p>
+          </div>
+        </div>
+
+        <!-- Incorrect Answer -->
+        <div x-show="!isCorrect" class="text-center">
+          <div class="bg-gradient-to-r from-red-400 to-red-600 rounded-xl px-4 py-3 shadow-xl">
+            <div class="text-4xl mb-1">😢</div>
+            <p class="text-lg font-bold text-white">Correct answer: <span class="font-bold text-yellow-300 text-2xl" x-text="correctLetter.toUpperCase()"></span></p>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<style>
+.letter-box {
+  border-bottom: 3px solid #4B5563;
+  padding: 0.5rem;
+  min-width: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease-out;
+}
+
+.letter-box.missing-letter {
+  border-bottom: 3px solid #EF4444;
+  background: linear-gradient(to bottom, #FEE2E2, #FECACA);
+  border-radius: 0.5rem;
+  animation: pulse-missing 2s ease-in-out infinite;
+}
+
+.letter-box.missing-letter-correct {
+  border-bottom: 3px solid #10b981;
+  background: linear-gradient(to bottom, #d1fae5, #6ee7b7);
+  animation: celebrate-box 0.6s ease-out;
+}
+
+.letter-box.missing-letter-incorrect {
+  border-bottom: 3px solid #EF4444;
+  background: linear-gradient(to bottom, #fee2e2, #fca5a5);
+  animation: shake-box 0.5s ease-out;
+}
+
+@keyframes pulse-missing {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes celebrate-box {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+@keyframes shake-box {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.answer-button {
+  position: relative;
+  background: linear-gradient(to bottom right, #ffffff, #f3f4f6);
+  border: 3px solid #d1d5db;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.1);
+}
+
+.answer-button:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.05);
+  border-color: #3b82f6;
+  box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1);
+}
+
+.answer-button:active:not(:disabled) {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.answer-button.answer-correct {
+  background: linear-gradient(to bottom right, #d1fae5, #6ee7b7);
+  border-color: #10b981;
+  border-width: 4px;
+  animation: celebrate 0.6s ease-out;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
+}
+
+.answer-button.answer-incorrect {
+  background: linear-gradient(to bottom right, #fee2e2, #fca5a5);
+  border-color: #ef4444;
+  border-width: 4px;
+  animation: shake 0.5s ease-out;
+}
+
+.answer-button.answer-disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-6px) rotate(-1deg); }
+  20%, 40%, 60%, 80% { transform: translateX(6px) rotate(1deg); }
+}
+
+@keyframes celebrate {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.08) rotate(-4deg); }
+  75% { transform: scale(1.08) rotate(4deg); }
+}
+
+.animate-shake {
+  animation: shake 0.5s;
+}
+
+.animate-celebrate {
+  animation: celebrate 0.6s;
+}
+</style>

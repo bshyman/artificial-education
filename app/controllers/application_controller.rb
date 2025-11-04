@@ -17,6 +17,13 @@ class ApplicationController < ActionController::Base
     redirect_to landing_path unless current_player.present?
   end
 
+  def authenticate_super
+    return if current_user.super?
+
+    flash[:error] = 'You are not authorized to access this page'
+    redirect_to root_path
+  end
+
   def load_players
     @players = current_group.users.order(birthday: :asc)
   end

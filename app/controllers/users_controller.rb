@@ -26,7 +26,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     @user.group_id = current_user.group_id
-    @user.role = 'basic'
+    @user.role = 'child'
     @user.birthday = Date.strptime(user_params[:birthday], '%m/%d/%Y') if user_params[:birthday].present?
 
     if @user.save
@@ -46,6 +46,7 @@ class UsersController < ApplicationController
   def update_xp
     bank = current_user.bank + user_params[:xp].to_i
     current_player.update(xp: current_player.xp + user_params[:xp].to_i, bank:)
+    current_player.update!(xp: current_player.xp + user_params[:xp].to_i)
     render json: { xp: current_player.xp, level: current_player.level, level_progress: current_player.level_progress }, status: :ok
   end
 

@@ -1,0 +1,82 @@
+<div x-data="taskManager">
+  <!-- Filter Tabs -->
+  <div class="flex gap-4 mb-6 border-b border-gray-200">
+    <% @children.each_with_index do |child, index| %>
+      <button
+        @click="selectedChild = <%= child.id %>"
+        :class="selectedChild === <%= child.id %> ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-600'"
+        class="px-4 py-2 border-b-2 font-medium hover:text-blue-600 transition">
+        <%= child.first_name %>
+      </button>
+    <% end %>
+    <button
+      @click="selectedChild = null"
+      :class="selectedChild === null ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-600'"
+      class="px-4 py-2 border-b-2 font-medium hover:text-blue-600 transition">
+      All Tasks
+    </button>
+  </div>
+
+  <!-- Tasks Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <% @tasks.each do |task| %>
+      <div
+        x-show="selectedChild === null || selectedChild === <%= task.assigned_user_id %>"
+        class="bg-white rounded-lg shadow-md p-6 border-l-4 <%= task.completed? ? 'border-green-500' : 'border-blue-500' %>">
+
+        <div class="flex justify-between items-start mb-3">
+          <div>
+            <span class="text-2xl mr-2"><%= task.emoji_for_category %></span>
+            <span class="font-bold text-lg text-gray-800"><%= task.title %></span>
+          </div>
+          <span class="px-3 py-1 rounded-full text-sm font-semibold <%= task.completed? ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800' %>">
+            <%= task.status.titleize %>
+          </span>
+        </div>
+
+        <% if task.description.present? %>
+          <p class="text-gray-600 text-sm mb-3"><%= task.description %></p>
+        <% end %>
+
+        <div class="flex justify-between items-center mt-4">
+          <div class="text-sm text-gray-500">
+            <p><strong>Assigned to:</strong> <%= task.assigned_user.first_name %></p>
+            <% if task.due_date %>
+              <p class="<%= task.overdue? ? 'text-red-600 font-semibold' : '' %>">
+                <strong>Due:</strong> <%= task.due_date.strftime("%b %d, %I:%M %p") %>
+              </p>
+            <% end %>
+            <% if task.repeating? %>
+              <p><span class="text-blue-600">🔄 Repeats <%= task.repeat_frequency %></span></p>
+            <% end %>
+          </div>
+
+          <div class="text-right">
+            <p class="text-2xl font-bold text-yellow-600"><%= task.points %> pts</p>
+          </div>
+        </div>
+
+        <% unless task.completed? %>
+          <div class="flex gap-2 mt-4">
+            <%= link_to 'Edit', edit_task_path(task), class: 'btn secondary sm flex-1' %>
+            <%= link_to 'Delete', task_path(task), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn danger sm' %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @tasks.empty? %>
+    <div class="text-center py-12">
+      <p class="text-xl text-gray-500">No tasks yet! Create one to get started.</p>
+    </div>
+  <% end %>
+</div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+  Alpine.data('taskManager', () => ({
+    selectedChild: null
+  }))
+})
+</script>
