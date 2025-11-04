@@ -21,7 +21,8 @@
       Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
     -->
 
-</head>
+  <%= Sentry.get_trace_propagation_meta.html_safe %>
+  </head>
 
 <body>
 <%= render partial: 'layouts/navbar' unless content_for :skip_navbar %>
